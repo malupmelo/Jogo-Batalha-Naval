@@ -1,0 +1,6 @@
+# build
+*.o
+battleship
+
+# macOS
+.DS_Store
