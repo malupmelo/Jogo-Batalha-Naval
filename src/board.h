@@ -32,3 +32,11 @@ typedef enum {
 static inline int tabuleiro_indice(const Tabuleiro *t, int linha, int coluna) {
     return linha * t->colunas + coluna;
 }
+
+
+/* ---------- Funções públicas do Tabuleiro (Fase 2A) ---------- */
+bool tabuleiro_inicializar(Tabuleiro *t, int linhas, int colunas);
+void tabuleiro_destruir(Tabuleiro *t);
+bool tabuleiro_dentro_limites(const Tabuleiro *t, int linha, int coluna);
+
+
