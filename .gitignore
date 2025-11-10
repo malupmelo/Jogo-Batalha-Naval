@@ -4,3 +4,10 @@ battleship
 
 # macOS
 .DS_Store
+# build
+*.o
+battleship
+main
+src/main
+.vscode/
+.DS_Store
