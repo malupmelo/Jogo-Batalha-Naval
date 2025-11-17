@@ -52,11 +52,9 @@ make clean
 
 ## 👥 Nossa Equipe
 
-- Ana Beatriz Astle  
 - Denise Hollanda  
 - João Victor Astle  
 - Maria Luiza Melo  
-- Mateus Guimarães  
-- Vinicius Cardoso  
+
 
 
