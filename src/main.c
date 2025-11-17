@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "board.h"
+#include "fleet.h"
 
 int main(void) {
     printf("=== BATALHA NAVAL ===\n");
@@ -16,5 +17,11 @@ int main(void) {
     } else {
         printf("Falha ao inicializar tabuleiro\n");
     }
+    Frota f;
+    if (frota_inicializar(&f)) {
+    printf("Frota inicializada com %d navios.\n", f.quantidade);
+    frota_destruir(&f);
+    }
+
     return 0;
 }

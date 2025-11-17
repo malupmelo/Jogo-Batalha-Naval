@@ -14,4 +14,11 @@ typedef struct {
     Navio *navios;   // vetor dinâmico
     int quantidade;  // tamanho do vetor
 } Frota;
+bool frota_inicializar(Frota *f);
+void frota_destruir(Frota *f);
+
+/* Acertos e afundamento */
+void frota_registrar_acerto(Frota *f, int id_navio);
+bool frota_navio_afundou(Frota *f, int id_navio);
+
 
