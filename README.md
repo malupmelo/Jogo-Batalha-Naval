@@ -26,8 +26,8 @@ Desenvolver uma implementação sólida, modular e didática do jogo Batalha Nav
 ### **1. Clonar o repositório**
 
 ```bash
-git clone https://github.com/SEU_USUARIO/SEU_REPO.git
-cd SEU_REPO
+git clone (https://github.com/malupmelo/Jogo-Batalha-Naval.git)
+cd Jogo-Batalha-Naval
 ```
 
 ### **2. Compilar o projeto**
@@ -55,6 +55,7 @@ make clean
 - Denise Hollanda  
 - João Victor Astle  
 - Maria Luiza Melo  
+
 
 
 
