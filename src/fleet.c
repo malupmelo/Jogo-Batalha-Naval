@@ -88,6 +88,38 @@ bool frota_colide(const Tabuleiro *t, int linha, int coluna, int tamanho, Orient
     return false;
 }
 
+// Posiciona de fato o navio no tabuleiro.
+// Pré-condições: já verificou "cabe" e "não colide".
+bool frota_posicionar_navio(Tabuleiro *t, Frota *f, int id_navio,
+                            int linha, int coluna, Orientacao orientacao) {
+
+    if (!t || !f || id_navio < 0 || id_navio >= f->quantidade)
+        return false;
+
+    Navio *n = &f->navios[id_navio];
+
+    // Marca células
+    for (int i = 0; i < n->tamanho; i++) {
+
+        int r = linha;
+        int c = coluna;
+
+        if (orientacao == ORIENTACAO_HORIZONTAL)
+            c += i;
+        else
+            r += i;
+
+        int idx = tabuleiro_indice(t, r, c);
+
+        t->celulas[idx].estado   = CELULA_NAVIO;
+        t->celulas[idx].id_navio = id_navio;
+    }
+
+    n->posicionado = 1;
+    return true;
+}
+
+
 
 
 
