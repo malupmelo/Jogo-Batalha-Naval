@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "fleet.h"
+#include "board.h"
 
 static void navio_definir(Navio *n, const char *nome, int tamanho) {
     strcpy(n->nome, nome);
@@ -42,6 +43,20 @@ bool frota_navio_afundou(Frota *f, int id_navio) {
     if (!f || id_navio < 0 || id_navio >= f->quantidade) return false;
     Navio *n = &f->navios[id_navio];
     return n->acertos >= n->tamanho;
+}
+
+bool frota_cabe_no_tabuleiro(const Tabuleiro *t, int linha, int coluna, int tamanho, Orientacao orientacao) {
+    if (!t) return false;
+
+    // Horizontal → ocupa colunas
+    if (orientacao == ORIENTACAO_HORIZONTAL) {
+        return coluna + tamanho <= t->colunas;
+    }
+
+    // Vertical → ocupa linhas
+    else {
+        return linha + tamanho <= t->linhas;
+    }
 }
 
 
