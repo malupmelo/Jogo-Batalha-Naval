@@ -59,6 +59,36 @@ bool frota_cabe_no_tabuleiro(const Tabuleiro *t, int linha, int coluna, int tama
     }
 }
 
+bool frota_colide(const Tabuleiro *t, int linha, int coluna, int tamanho, Orientacao orientacao) {
+    if (!t) return true; // por segurança, considere colisão se inválido
+
+    // Verifica célula por célula
+    for (int i = 0; i < tamanho; i++) {
+
+        int r = linha;
+        int c = coluna;
+
+        if (orientacao == ORIENTACAO_HORIZONTAL)
+            c += i;
+        else
+            r += i;
+
+        // Se a célula está fora do tabuleiro (segurança reforçada)
+        if (!tabuleiro_dentro_limites(t, r, c))
+            return true;
+
+        int idx = tabuleiro_indice(t, r, c);
+
+        // Se já existe navio, há colisão
+        if (t->celulas[idx].estado == CELULA_NAVIO)
+            return true;
+    }
+
+    // Nenhuma colisão encontrada
+    return false;
+}
+
+
 
 
 

@@ -21,6 +21,7 @@ void frota_destruir(Frota *f);
 void frota_registrar_acerto(Frota *f, int id_navio);
 bool frota_navio_afundou(Frota *f, int id_navio);
 bool frota_cabe_no_tabuleiro(const Tabuleiro *t, int linha, int coluna, int tamanho, Orientacao orientacao);
+bool frota_colide(const Tabuleiro *t, int linha, int coluna, int tamanho, Orientacao orientacao);
 
 
 
