@@ -2,6 +2,7 @@
 #include <string.h>
 #include "fleet.h"
 #include "board.h"
+#include "rnd.h"
 
 static void navio_definir(Navio *n, const char *nome, int tamanho) {
     strcpy(n->nome, nome);
@@ -107,6 +108,55 @@ bool frota_posicionar_navio(Tabuleiro *t, Frota *f, int id_navio,
     }
 
     n->posicionado = 1;
+    return true;
+}
+
+int frota_linha_aleatoria(const Tabuleiro *t) {
+    return aleatorio_intervalo(0, t->linhas - 1);
+}
+
+int frota_coluna_aleatoria(const Tabuleiro *t) {
+    return aleatorio_intervalo(0, t->colunas - 1);
+}
+
+Orientacao frota_orientacao_aleatoria(void) {
+    int v = aleatorio_intervalo(0, 1);
+    return (v == 0 ? ORIENTACAO_HORIZONTAL : ORIENTACAO_VERTICAL);
+}
+
+bool frota_posicionar_automatico(Tabuleiro *t, Frota *f) {
+    if (!t || !f) return false;
+
+    for (int id = 0; id < f->quantidade; id++) {
+        Navio *n = &f->navios[id];
+        int tentativas = 0;
+        const int TENT_MAX = 200; 
+
+        bool colocado = false;
+
+        while (!colocado && tentativas < TENT_MAX) {
+            tentativas++;
+
+            int linha = frota_linha_aleatoria(t);
+            int coluna = frota_coluna_aleatoria(t);
+            Orientacao o = frota_orientacao_aleatoria();
+
+            if (!frota_cabe_no_tabuleiro(t, linha, coluna, n->tamanho, o))
+                continue;
+
+            if (frota_colide(t, linha, coluna, n->tamanho, o))
+                continue;
+
+            frota_posicionar_navio(t, f, id, linha, coluna, o);
+            colocado = true;
+        }
+
+        if (!colocado) {
+            printf("ERRO: nao foi possivel posicionar o navio %s\n", n->nome);
+            return false;
+        }
+    }
+
     return true;
 }
 

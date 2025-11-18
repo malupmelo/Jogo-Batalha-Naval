@@ -3,9 +3,10 @@
 #include "rnd.h"
 
 void aleatorio_inicializar(void) {
+    srand((unsigned)time(NULL));
 }
 
 int aleatorio_intervalo(int minimo, int maximo) {
-    (void)minimo; (void)maximo;
-    return minimo;
+    return minimo + rand() % (maximo - minimo + 1);
 }
+

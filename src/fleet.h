@@ -21,6 +21,10 @@ bool frota_cabe_no_tabuleiro(const Tabuleiro *t, int linha, int coluna, int tama
 bool frota_colide(const Tabuleiro *t, int linha, int coluna, int tamanho, Orientacao orientacao);
 bool frota_posicionar_navio(Tabuleiro *t, Frota *f, int id_navio,
                             int linha, int coluna, Orientacao orientacao);
+int frota_linha_aleatoria(const Tabuleiro *t);
+int frota_coluna_aleatoria(const Tabuleiro *t);
+Orientacao frota_orientacao_aleatoria(void);
+bool frota_posicionar_automatico(Tabuleiro *t, Frota *f);
 
 
 

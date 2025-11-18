@@ -1,27 +1,39 @@
 #include <stdio.h>
 #include "board.h"
 #include "fleet.h"
+#include "rnd.h"
 
 int main(void) {
     printf("=== BATALHA NAVAL ===\n");
-    printf("(menu em construção)\n");
-    printf("1) Novo jogo\n2) Configurações\n3) Sair\n");
+    printf("1) Novo jogo\n2) Configurações\n3) Sair\n\n");
+
+    aleatorio_inicializar();
 
     Tabuleiro t;
-    if (tabuleiro_inicializar(&t, 10, 10)) {
-        printf("Tabuleiro 10x10 OK\n");
-        printf("(0,0) dentro? %s\n",  tabuleiro_dentro_limites(&t, 0, 0) ? "sim" : "nao");
-        printf("(9,9) dentro? %s\n",  tabuleiro_dentro_limites(&t, 9, 9) ? "sim" : "nao");
-        printf("(10,10) dentro? %s\n", tabuleiro_dentro_limites(&t, 10, 10) ? "sim" : "nao");
-        tabuleiro_destruir(&t);
-    } else {
-        printf("Falha ao inicializar tabuleiro\n");
-    }
     Frota f;
-    if (frota_inicializar(&f)) {
-    printf("Frota inicializada com %d navios.\n", f.quantidade);
-    frota_destruir(&f);
+
+    if (!tabuleiro_inicializar(&t, 10, 10)) {
+        printf("ERRO: Falha ao inicializar tabuleiro!\n");
+        return 1;
     }
+
+    if (!frota_inicializar(&f)) {
+        printf("ERRO: Falha ao inicializar frota!\n");
+        tabuleiro_destruir(&t);
+        return 1;
+    }
+
+    printf("Posicionando navios automaticamente...\n");
+
+    if (frota_posicionar_automatico(&t, &f)) {
+        printf("OK! Todos os navios foram posicionados.\n");
+    } else {
+        printf("ERRO: Não foi possível posicionar todos os navios.\n");
+    }
+
+    frota_destruir(&f);
+    tabuleiro_destruir(&t);
 
     return 0;
 }
+
