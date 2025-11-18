@@ -20,7 +20,6 @@ bool tabuleiro_inicializar(Tabuleiro *t, int linhas, int colunas) {
         return false;
     }
 
-    // Todas as células começam como água e sem navio
     for (int r = 0; r < linhas; r++) {
         for (int c = 0; c < colunas; c++) {
             int i = tabuleiro_indice(t, r, c);
@@ -31,10 +30,10 @@ bool tabuleiro_inicializar(Tabuleiro *t, int linhas, int colunas) {
     return true;
 }
 void tabuleiro_destruir(Tabuleiro *t) {
-    if (!t) return;             // segurança: evita erro se o ponteiro for NULL
-    free(t->celulas);           // libera a memória alocada no malloc
-    t->celulas = NULL;          // evita uso acidental após liberar
-    t->linhas = 0;              // zera dimensões
+    if (!t) return;             
+    free(t->celulas);           
+    t->celulas = NULL;          
+    t->linhas = 0;              
     t->colunas = 0;
 }
 

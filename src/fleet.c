@@ -48,21 +48,18 @@ bool frota_navio_afundou(Frota *f, int id_navio) {
 bool frota_cabe_no_tabuleiro(const Tabuleiro *t, int linha, int coluna, int tamanho, Orientacao orientacao) {
     if (!t) return false;
 
-    // Horizontal → ocupa colunas
     if (orientacao == ORIENTACAO_HORIZONTAL) {
         return coluna + tamanho <= t->colunas;
     }
 
-    // Vertical → ocupa linhas
     else {
         return linha + tamanho <= t->linhas;
     }
 }
 
 bool frota_colide(const Tabuleiro *t, int linha, int coluna, int tamanho, Orientacao orientacao) {
-    if (!t) return true; // por segurança, considere colisão se inválido
+    if (!t) return true; 
 
-    // Verifica célula por célula
     for (int i = 0; i < tamanho; i++) {
 
         int r = linha;
@@ -73,23 +70,18 @@ bool frota_colide(const Tabuleiro *t, int linha, int coluna, int tamanho, Orient
         else
             r += i;
 
-        // Se a célula está fora do tabuleiro (segurança reforçada)
         if (!tabuleiro_dentro_limites(t, r, c))
             return true;
 
         int idx = tabuleiro_indice(t, r, c);
 
-        // Se já existe navio, há colisão
         if (t->celulas[idx].estado == CELULA_NAVIO)
             return true;
     }
 
-    // Nenhuma colisão encontrada
     return false;
 }
 
-// Posiciona de fato o navio no tabuleiro.
-// Pré-condições: já verificou "cabe" e "não colide".
 bool frota_posicionar_navio(Tabuleiro *t, Frota *f, int id_navio,
                             int linha, int coluna, Orientacao orientacao) {
 
@@ -98,7 +90,6 @@ bool frota_posicionar_navio(Tabuleiro *t, Frota *f, int id_navio,
 
     Navio *n = &f->navios[id_navio];
 
-    // Marca células
     for (int i = 0; i < n->tamanho; i++) {
 
         int r = linha;
