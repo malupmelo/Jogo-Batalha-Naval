@@ -1,9 +1,9 @@
-# 🔫 BATALHA NAVAL – Projeto PIF 2025.2  
+# BATALHA NAVAL – Projeto PIF 2025.2  
 Implementação do clássico jogo **Batalha Naval** utilizando a linguagem **C**, da disciplina **Programação Imperativa Fundamental (PIF)**.
 
 ---
 
-### 🎯 Nosso Propósito
+### Nosso Propósito
 Desenvolver uma implementação sólida, modular e didática do jogo Batalha Naval, servindo como:
 
 - Base de estudo para ponteiros, matrizes, structs e enums.  
@@ -11,7 +11,7 @@ Desenvolver uma implementação sólida, modular e didática do jogo Batalha Nav
 - Projeto incremental para consolidar fundamentos da programação imperativa em C.  
 
 
-### 🧭 Objetivos do Projeto
+### Objetivos do Projeto
 
 - Criar um tabuleiro dinâmico com validação de limites.  
 - Implementar uma frota completa de navios com controle de acertos e afundamentos.  
@@ -21,7 +21,7 @@ Desenvolver uma implementação sólida, modular e didática do jogo Batalha Nav
 - Garantir alocação e liberação seguras de memória.  
 
 ---
-## ▶️ Como Rodar o Projeto
+## Como Rodar o Projeto
 
 ### **1. Clonar o repositório**
 
@@ -50,11 +50,12 @@ make clean
 
 ---
 
-## 👥 Nossa Equipe
+## Nossa Equipe
 
 - Denise Hollanda  
 - João Victor Astle  
 - Maria Luiza Melo  
+
 
 
 
