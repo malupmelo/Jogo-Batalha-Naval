@@ -27,4 +27,7 @@ typedef struct {
     bool partida_encerrada;
 } Partida;
 
+ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna);
+
+
 
