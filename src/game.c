@@ -43,4 +43,20 @@ ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna) {
     return TIRO_INVALIDO; 
 }
 
+Jogador* partida_jogador_atual(Partida *p) {
+    if (!p) return NULL;
+    return (p->jogador_atual == 1 ? &p->jogador1 : &p->jogador2);
+}
+
+Jogador* partida_jogador_oponente(Partida *p) {
+    if (!p) return NULL;
+    return (p->jogador_atual == 1 ? &p->jogador2 : &p->jogador1);
+}
+
+void partida_trocar_turno(Partida *p) {
+    if (!p) return;
+    p->jogador_atual = (p->jogador_atual == 1 ? 2 : 1);
+}
+
+
 

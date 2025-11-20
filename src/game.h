@@ -28,6 +28,10 @@ typedef struct {
 } Partida;
 
 ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna);
+Jogador* partida_jogador_atual(Partida *p);
+Jogador* partida_jogador_oponente(Partida *p);
+void partida_trocar_turno(Partida *p);
+
 
 
 
