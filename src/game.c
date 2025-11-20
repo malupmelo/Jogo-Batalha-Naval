@@ -1,5 +1,5 @@
-#include "game.h"
 #include <stdio.h>
+#include "game.h"
 
 ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna) {
     if (!p) return TIRO_INVALIDO;
@@ -57,6 +57,33 @@ void partida_trocar_turno(Partida *p) {
     if (!p) return;
     p->jogador_atual = (p->jogador_atual == 1 ? 2 : 1);
 }
+
+int verificarAtaque(int linha, int coluna, char tabuleiroDefesa[10][10]) {
+    if (linha < 0 || linha >= 10 || coluna < 0 || coluna >= 10) {
+        return -1;
+    }
+
+    if (tabuleiroDefesa[linha][coluna] == 'X' || tabuleiroDefesa[linha][coluna] == 'O') {
+        return -1;
+    }
+
+    if (tabuleiroDefesa[linha][coluna] == 'N') {
+        tabuleiroDefesa[linha][coluna] = 'X';  
+        return 1;
+    }
+
+    tabuleiroDefesa[linha][coluna] = 'O';  
+    return 0;
+}
+
+void marcarAtaque(int linha, int coluna, int resultado, char tabuleiroAtaque[10][10]) {
+    if (resultado == 1) {
+        tabuleiroAtaque[linha][coluna] = 'X';  
+    } else if (resultado == 0) {
+        tabuleiroAtaque[linha][coluna] = 'O';  
+    }
+}
+
 
 
 

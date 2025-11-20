@@ -31,6 +31,8 @@ ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna);
 Jogador* partida_jogador_atual(Partida *p);
 Jogador* partida_jogador_oponente(Partida *p);
 void partida_trocar_turno(Partida *p);
+int verificarAtaque(int linha, int coluna, char tabuleiroDefesa[10][10]);
+void marcarAtaque(int linha, int coluna, int resultado, char tabuleiroAtaque[10][10]);
 
 
 
