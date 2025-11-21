@@ -33,6 +33,8 @@ Jogador* partida_jogador_oponente(Partida *p);
 void partida_trocar_turno(Partida *p);
 int verificarAtaque(int linha, int coluna, char tabuleiroDefesa[10][10]);
 void marcarAtaque(int linha, int coluna, int resultado, char tabuleiroAtaque[10][10]);
+void lerCoordenadasAtaque(int *linha, int *coluna);
+void realizarTurno(char tabuleiroDefesa[10][10], char tabuleiroAtaque[10][10]);
 
 
 

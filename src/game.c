@@ -83,6 +83,48 @@ void marcarAtaque(int linha, int coluna, int resultado, char tabuleiroAtaque[10]
         tabuleiroAtaque[linha][coluna] = 'O';  
     }
 }
+#include <stdio.h>
+#include "game.h"
+
+void lerCoordenadasAtaque(int *linha, int *coluna) {
+    do {
+        printf("Digite a linha (0-9): ");
+        scanf("%d", linha);
+
+        printf("Digite a coluna (0-9): ");
+        scanf("%d", coluna);
+
+        if (*linha < 0 || *linha > 9 || *coluna < 0 || *coluna > 9) {
+            printf("Coordenadas inválidas! Tente novamente.\n");
+        }
+
+    } while (*linha < 0 || *linha > 9 || *coluna < 0 || *coluna > 9);
+}
+
+void realizarTurno(char tabuleiroDefesa[10][10], char tabuleiroAtaque[10][10]) {
+    int linha, coluna;
+    int resultado;
+
+    do {
+        lerCoordenadasAtaque(&linha, &coluna);
+
+        resultado = verificarAtaque(linha, coluna, tabuleiroDefesa);
+
+        if (resultado == -1) {
+            printf("Posição já atacada ou inválida! Escolha outra.\n");
+        }
+
+    } while (resultado == -1);
+
+    marcarAtaque(linha, coluna, resultado, tabuleiroAtaque);
+
+    if (resultado == 1) {
+        printf("Acertou!\n");
+    } else if (resultado == 0) {
+        printf("Água!\n");
+    }
+}
+
 
 
 
