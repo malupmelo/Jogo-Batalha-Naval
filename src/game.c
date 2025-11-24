@@ -125,6 +125,17 @@ void realizarTurno(char tabuleiroDefesa[10][10], char tabuleiroAtaque[10][10]) {
     }
 }
 
+int verificarFimDeJogo(char tabuleiroDefesa[10][10]) {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            if (tabuleiroDefesa[i][j] == 'N') {
+                return 0; 
+            }
+        }
+    }
+
+    return 1;
+}
 
 
 
