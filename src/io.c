@@ -5,6 +5,7 @@
 #include "board.h"
 #include "fleet.h"
 
+
 void limparBuffer(void) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {}
@@ -140,4 +141,32 @@ void imprimir_mapa_tiros(const Tabuleiro *t) {
         }
         printf("\n");
     }
+}
+
+
+int io_menu_principal(void) {
+    int opcao = -1;
+
+    printf("\n=== BATALHA NAVAL ===\n");
+    printf("1) Novo jogo\n");
+    printf("2) Configurações\n");
+    printf("3) Sair\n");
+    printf("Escolha uma opção: ");
+
+    while (1) {
+        if (scanf("%d", &opcao) != 1) {
+            while (getchar() != '\n'); 
+            printf("Entrada inválida. Digite 1, 2 ou 3: ");
+            continue;
+        }
+
+        if (opcao < 1 || opcao > 3) {
+            printf("Opção inexistente. Digite 1, 2 ou 3: ");
+            continue;
+        }
+
+        break;
+    }
+
+    return opcao;
 }

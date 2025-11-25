@@ -10,3 +10,5 @@ void lerCoordenada(int *linha, int *coluna, int limite);
 
 void imprimir_tabuleiro_navios(const Tabuleiro *t);
 void imprimir_mapa_tiros(const Tabuleiro *t);
+
+int io_menu_principal(void);
