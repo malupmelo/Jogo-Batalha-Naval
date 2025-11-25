@@ -6,7 +6,6 @@
 #include "fleet.h"
 #include <stdbool.h>
 
-
 void limparBuffer(void) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {}
@@ -34,7 +33,6 @@ int validarCoordenada(const char *entrada, int limite) {
         return 0;
 
     char letra = entrada[0];
-
     if (!isalpha(letra))
         return 0;
 
@@ -44,15 +42,14 @@ int validarCoordenada(const char *entrada, int limite) {
         return 0;
 
     int numero = atoi(entrada + 1);
-
     if (numero < 1 || numero > limite)
         return 0;
 
     return 1;
 }
 
-int converterCoordenada(const char *entrada, int *linha, int *coluna) {
-    if (!validarCoordenada(entrada, 10))
+int converterCoordenada(const char *entrada, int *linha, int *coluna, int limite) {
+    if (!validarCoordenada(entrada, limite))
         return 0;
 
     char letra = toupper(entrada[0]);
@@ -71,7 +68,7 @@ void lerCoordenada(int *linha, int *coluna, int limite) {
         printf("Digite a coordenada (ex: A5): ");
         lerString(entrada, sizeof(entrada));
 
-        if (converterCoordenada(entrada, linha, coluna)) {
+        if (converterCoordenada(entrada, linha, coluna, limite)) {
             return;
         }
 
@@ -79,6 +76,7 @@ void lerCoordenada(int *linha, int *coluna, int limite) {
                'A' + limite - 1, limite);
     }
 }
+
 
 
 void imprimir_tabuleiro_navios(const Tabuleiro *t) {
@@ -112,7 +110,6 @@ void imprimir_tabuleiro_navios(const Tabuleiro *t) {
     }
 }
 
-
 void imprimir_mapa_tiros(const Tabuleiro *t) {
     if (!t) return;
 
@@ -136,7 +133,7 @@ void imprimir_mapa_tiros(const Tabuleiro *t) {
             else if (t->celulas[i].estado == CELULA_ERRO)
                 simbolo = '·';
             else
-                simbolo = '~'; 
+                simbolo = '~';
 
             printf(" %c ", simbolo);
         }
@@ -156,7 +153,7 @@ int io_menu_principal(void) {
 
     while (1) {
         if (scanf("%d", &opcao) != 1) {
-            while (getchar() != '\n'); 
+            limparBuffer();
             printf("Entrada inválida. Digite 1, 2 ou 3: ");
             continue;
         }
@@ -173,45 +170,22 @@ int io_menu_principal(void) {
 }
 
 
-bool io_ler_coordenada(int *linha, int *coluna) {
+bool io_ler_coordenada(int *linha, int *coluna, int limite) {
     char entrada[8];
 
     printf("Digite a coordenada do tiro (ex: A5, C10): ");
 
     while (1) {
         if (scanf("%7s", entrada) != 1) {
-            while (getchar() != '\n'); 
+            limparBuffer();
             printf("Entrada inválida. Tente novamente: ");
             continue;
         }
 
-        char letra = entrada[0];
-        if (!isalpha(letra)) {
-            printf("Formato inválido. Comece com uma letra (A-J): ");
-            continue;
-        }
+        if (converterCoordenada(entrada, linha, coluna, limite))
+            return true;
 
-        letra = toupper(letra);
-
-        if (letra < 'A' || letra > 'J') {
-            printf("Letra fora do intervalo (A-J). Tente novamente: ");
-            continue;
-        }
-
-        int num = 0;
-        if (sscanf(entrada + 1, "%d", &num) != 1) {
-            printf("Número inválido. Tente novamente: ");
-            continue;
-        }
-
-        if (num < 1 || num > 10) {
-            printf("Número fora do intervalo (1-10). Tente novamente: ");
-            continue;
-        }
-
-        *coluna = letra - 'A';
-        *linha = num - 1;
-
-        return true;
+        printf("Entrada inválida! Use letras A-%c e números entre 1-%d.\n",
+               'A' + limite - 1, limite);
     }
 }
