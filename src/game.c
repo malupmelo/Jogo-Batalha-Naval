@@ -59,6 +59,19 @@ void partida_destruir(Partida *p) {
     jogador_destruir(&p->jogador2);
 }
 
+bool game_posicionar_frota_automatica(Jogador *j) {
+    if (!j) return false;
+
+    Tabuleiro *t = &j->tabuleiro_navios;
+    int total = t->linhas * t->colunas;
+
+    for (int i = 0; i < total; i++) {
+        t->celulas[i].estado = CELULA_AGUA;
+        t->celulas[i].id_navio = -1;
+    }
+
+    return frota_posicionar_automatico(&j->frota, t);
+}
 
 ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna) {
     if (!p) return TIRO_INVALIDO;

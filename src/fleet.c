@@ -159,9 +159,3 @@ bool frota_posicionar_automatico(Tabuleiro *t, Frota *f) {
 
     return true;
 }
-
-
-
-
-
-
