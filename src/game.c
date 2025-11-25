@@ -1,6 +1,65 @@
 #include <stdio.h>
 #include "game.h"
 
+bool jogador_inicializar(Jogador *j, const char *apelido, int linhas, int colunas) {
+    if (!j) return false;
+
+    strncpy(j->apelido, apelido, sizeof(j->apelido) - 1);
+    j->apelido[sizeof(j->apelido) - 1] = '\0';
+
+    if (!tabuleiro_inicializar(&j->tabuleiro_navios, linhas, colunas))
+        return false;
+
+    if (!tabuleiro_inicializar(&j->mapa_tiros, linhas, colunas)) {
+        tabuleiro_destruir(&j->tabuleiro_navios);
+        return false;
+    }
+
+    if (!frota_inicializar(&j->frota)) {
+        tabuleiro_destruir(&j->mapa_tiros);
+        tabuleiro_destruir(&j->tabuleiro_navios);
+        return false;
+    }
+
+    return true;
+}
+
+void jogador_destruir(Jogador *j) {
+    if (!j) return;
+
+    frota_destruir(&j->frota);
+    tabuleiro_destruir(&j->mapa_tiros);
+    tabuleiro_destruir(&j->tabuleiro_navios);
+}
+
+bool partida_inicializar(Partida *p, const char *apelido1, const char *apelido2,
+                         int linhas, int colunas) {
+    if (!p) return false;
+
+    p->linhas  = linhas;
+    p->colunas = colunas;
+    p->partida_encerrada = false;
+    p->jogador_atual = 1; // Jogador 1 começa
+
+    if (!jogador_inicializar(&p->jogador1, apelido1, linhas, colunas))
+        return false;
+
+    if (!jogador_inicializar(&p->jogador2, apelido2, linhas, colunas)) {
+        jogador_destruir(&p->jogador1);
+        return false;
+    }
+
+    return true;
+}
+
+void partida_destruir(Partida *p) {
+    if (!p) return;
+
+    jogador_destruir(&p->jogador1);
+    jogador_destruir(&p->jogador2);
+}
+
+
 ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna) {
     if (!p) return TIRO_INVALIDO;
 
