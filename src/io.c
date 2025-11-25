@@ -4,6 +4,7 @@
 #include <string.h>
 #include "board.h"
 #include "fleet.h"
+#include <stdbool.h>
 
 
 void limparBuffer(void) {
@@ -169,4 +170,48 @@ int io_menu_principal(void) {
     }
 
     return opcao;
+}
+
+
+bool io_ler_coordenada(int *linha, int *coluna) {
+    char entrada[8];
+
+    printf("Digite a coordenada do tiro (ex: A5, C10): ");
+
+    while (1) {
+        if (scanf("%7s", entrada) != 1) {
+            while (getchar() != '\n'); 
+            printf("Entrada inválida. Tente novamente: ");
+            continue;
+        }
+
+        char letra = entrada[0];
+        if (!isalpha(letra)) {
+            printf("Formato inválido. Comece com uma letra (A-J): ");
+            continue;
+        }
+
+        letra = toupper(letra);
+
+        if (letra < 'A' || letra > 'J') {
+            printf("Letra fora do intervalo (A-J). Tente novamente: ");
+            continue;
+        }
+
+        int num = 0;
+        if (sscanf(entrada + 1, "%d", &num) != 1) {
+            printf("Número inválido. Tente novamente: ");
+            continue;
+        }
+
+        if (num < 1 || num > 10) {
+            printf("Número fora do intervalo (1-10). Tente novamente: ");
+            continue;
+        }
+
+        *coluna = letra - 'A';
+        *linha = num - 1;
+
+        return true;
+    }
 }

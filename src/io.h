@@ -1,5 +1,6 @@
 #pragma once
 #include <stdio.h>
+#include <stdbool.h>
 
 void limparBuffer(void);
 void lerString(char *str, int tamanho);
@@ -12,3 +13,5 @@ void imprimir_tabuleiro_navios(const Tabuleiro *t);
 void imprimir_mapa_tiros(const Tabuleiro *t);
 
 int io_menu_principal(void);
+
+bool io_ler_coordenada(int *linha, int *coluna);
