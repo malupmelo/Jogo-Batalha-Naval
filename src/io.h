@@ -15,3 +15,4 @@ void imprimir_mapa_tiros(const Tabuleiro *t);
 int io_menu_principal(void);
 
 bool io_ler_coordenada(int *linha, int *coluna);
+

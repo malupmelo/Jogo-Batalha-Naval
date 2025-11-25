@@ -138,5 +138,34 @@ int verificarFimDeJogo(char tabuleiroDefesa[10][10]) {
 }
 
 
+ResultadoTiro game_atirar(Jogador *alvo, int linha, int coluna) {
+    if (!alvo) return TIRO_INVALIDO;
 
+    Tabuleiro *mapa = &alvo->mapa_tiros;
+    Tabuleiro *navios = &alvo->tabuleiro_navios;
 
+    if (!tabuleiro_dentro_limites(navios, linha, coluna))
+        return TIRO_INVALIDO;
+
+    int idx = tabuleiro_indice(navios, linha, coluna);
+
+    if (mapa->celulas[idx].estado == CELULA_ACERTO ||
+        mapa->celulas[idx].estado == CELULA_ERRO)
+        return TIRO_REPETIDO;
+
+    if (navios->celulas[idx].estado == CELULA_AGUA) {
+        mapa->celulas[idx].estado = CELULA_ERRO;
+        return TIRO_AGUA;
+    }
+
+    int id = navios->celulas[idx].id_navio;
+
+    mapa->celulas[idx].estado = CELULA_ACERTO;
+
+    frota_registrar_acerto(&alvo->frota, id);
+
+    if (frota_navio_afundou(&alvo->frota, id))
+        return TIRO_AFUNDOU;
+
+    return TIRO_ACERTO;
+}

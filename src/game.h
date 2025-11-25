@@ -37,6 +37,8 @@ void lerCoordenadasAtaque(int *linha, int *coluna);
 void realizarTurno(char tabuleiroDefesa[10][10], char tabuleiroAtaque[10][10]);
 int verificarFimDeJogo(char tabuleiroDefesa[10][10]);
 
+ResultadoTiro game_atirar(Jogador *alvo, int linha, int coluna);
+
 
 
 
