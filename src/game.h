@@ -46,6 +46,8 @@ int verificarFimDeJogo(char tabuleiroDefesa[10][10]);
 
 ResultadoTiro game_atirar(Jogador *alvo, int linha, int coluna);
 
+void game_turno(Partida *p);
+void game_executar_partida(Partida *p);
 
 
 

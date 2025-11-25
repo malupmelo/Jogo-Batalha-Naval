@@ -118,6 +118,62 @@ bool game_frota_destruida(Jogador *j) {
     return true;
 }
 
+void game_turno(Partida *p) {
+    Jogador *atacante = (p->jogador_atual == 1 ? &p->jogador1 : &p->jogador2);
+    Jogador *defensor = (p->jogador_atual == 1 ? &p->jogador2 : &p->jogador1);
+
+    int linha, coluna;
+
+    printf("\n--- Turno de %s ---\n", atacante->apelido);
+    printf("Seu mapa de tiros:\n");
+    imprimir_mapa_tiros(&atacante->mapa_tiros);
+
+    printf("\nDigite a coordenada do tiro:\n");
+
+    io_ler_coordenada(&linha, &coluna);
+
+    ResultadoTiro r = game_tentar_tiro(atacante, defensor, linha, coluna);
+
+    switch (r) {
+        case TIRO_REPETIDO:
+            printf("Você já atirou aqui! Perdeu a vez.\n");
+            break;
+        case TIRO_AGUA:
+            printf("Água!\n");
+            break;
+        case TIRO_ACERTO:
+            printf("Acertou um navio!\n");
+            break;
+        case TIRO_AFUNDOU:
+            printf("Você afundou um navio inimigo!\n");
+            break;
+        default:
+            printf("Erro no tiro.\n");
+            break;
+    }
+
+    p->jogador_atual = (p->jogador_atual == 1 ? 2 : 1);
+}
+
+void game_executar_partida(Partida *p) {
+    printf("\n=== INICIANDO PARTIDA ===\n");
+
+    while (1) {
+        game_turno(p);
+
+        if (game_frota_destruida(&p->jogador1)) {
+            printf("\nFIM DE JOGO! Jogador 2 venceu!\n");
+            return;
+        }
+
+        if (game_frota_destruida(&p->jogador2)) {
+            printf("\nFIM DE JOGO! Jogador 1 venceu!\n");
+            return;
+        }
+    }
+}
+
+
 
 Jogador* partida_jogador_atual(Partida *p) {
     if (!p) return NULL;
