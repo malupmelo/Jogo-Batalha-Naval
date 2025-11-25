@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include "board.h"
+#include "fleet.h"
 
 void limparBuffer(void) {
     int c;
@@ -73,5 +75,69 @@ void lerCoordenada(int *linha, int *coluna, int limite) {
 
         printf("Entrada inválida! Use letras A-%c e números entre 1-%d.\n",
                'A' + limite - 1, limite);
+    }
+}
+
+
+void imprimir_tabuleiro_navios(const Tabuleiro *t) {
+    if (!t) return;
+
+    printf("\n    ");
+
+    for (int c = 0; c < t->colunas; c++)
+        printf(" %c ", 'A' + c);
+
+    printf("\n");
+
+    for (int r = 0; r < t->linhas; r++) {
+        printf("%2d  ", r + 1);
+
+        for (int c = 0; c < t->colunas; c++) {
+            int i = tabuleiro_indice(t, r, c);
+
+            char simbolo;
+            switch (t->celulas[i].estado) {
+                case CELULA_AGUA:   simbolo = '~'; break;
+                case CELULA_NAVIO:  simbolo = '#'; break;
+                case CELULA_ACERTO: simbolo = 'X'; break;
+                case CELULA_ERRO:   simbolo = '·'; break;
+                default: simbolo = '?';
+            }
+
+            printf(" %c ", simbolo);
+        }
+        printf("\n");
+    }
+}
+
+
+void imprimir_mapa_tiros(const Tabuleiro *t) {
+    if (!t) return;
+
+    printf("\n    ");
+
+    for (int c = 0; c < t->colunas; c++)
+        printf(" %c ", 'A' + c);
+
+    printf("\n");
+
+    for (int r = 0; r < t->linhas; r++) {
+        printf("%2d  ", r + 1);
+
+        for (int c = 0; c < t->colunas; c++) {
+            int i = tabuleiro_indice(t, r, c);
+
+            char simbolo;
+
+            if (t->celulas[i].estado == CELULA_ACERTO)
+                simbolo = 'X';
+            else if (t->celulas[i].estado == CELULA_ERRO)
+                simbolo = '·';
+            else
+                simbolo = '~'; 
+
+            printf(" %c ", simbolo);
+        }
+        printf("\n");
     }
 }
