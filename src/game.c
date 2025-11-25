@@ -73,47 +73,51 @@ bool game_posicionar_frota_automatica(Jogador *j) {
     return frota_posicionar_automatico(&j->frota, t);
 }
 
-ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna) {
-    if (!p) return TIRO_INVALIDO;
+ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int coluna) {
+    Tabuleiro *navios = &alvo->tabuleiro_navios;
+    Tabuleiro *tiros  = &atirador->mapa_tiros;
 
-    Jogador *atacante = (p->jogador_atual == 1 ? &p->jogador1 : &p->jogador2);
-    Jogador *defensor = (p->jogador_atual == 1 ? &p->jogador2 : &p->jogador1);
+    int idx = tabuleiro_indice(navios, linha, coluna);
 
-    if (!tabuleiro_dentro_limites(&defensor->tabuleiro_navios, linha, coluna))
-        return TIRO_INVALIDO;
-
-    int idx = tabuleiro_indice(&defensor->tabuleiro_navios, linha, coluna);
-
-    if (atacante->mapa_tiros.celulas[idx].estado == CELULA_ACERTO ||
-        atacante->mapa_tiros.celulas[idx].estado == CELULA_ERRO)
+    if (tiros->celulas[idx].estado == CELULA_ACERTO ||
+        tiros->celulas[idx].estado == CELULA_ERRO)
     {
         return TIRO_REPETIDO;
     }
 
-    Celula *cel = &defensor->tabuleiro_navios.celulas[idx];
-
-    if (cel->estado == CELULA_AGUA) {
-        atacante->mapa_tiros.celulas[idx].estado = CELULA_ERRO;
-        cel->estado = CELULA_ERRO;
+    if (navios->celulas[idx].estado == CELULA_AGUA) {
+        navios->celulas[idx].estado = CELULA_ERRO;
+        tiros->celulas[idx].estado = CELULA_ERRO;
         return TIRO_AGUA;
     }
 
-    if (cel->estado == CELULA_NAVIO) {
-        atacante->mapa_tiros.celulas[idx].estado = CELULA_ACERTO;
-        cel->estado = CELULA_ACERTO;
+    if (navios->celulas[idx].estado == CELULA_NAVIO) {
 
-        int id = cel->id_navio;
-        frota_registrar_acerto(&defensor->frota, id);
+        navios->celulas[idx].estado = CELULA_ACERTO;
+        tiros->celulas[idx].estado = CELULA_ACERTO;
 
-        if (frota_navio_afundou(&defensor->frota, id)) {
-            return TIRO_AFUNDOU;
+        int id = navios->celulas[idx].id_navio;
+        frota_registrar_acerto(&alvo->frota, id);
+
+        if (frota_navio_afundou(&alvo->frota, id)) {
+            return TIRO_AFUNDOU;   
         }
 
         return TIRO_ACERTO;
     }
 
-    return TIRO_INVALIDO; 
+    return TIRO_INVALIDO;
 }
+
+bool game_frota_destruida(Jogador *j) {
+    for (int i = 0; i < j->frota.quantidade; i++) {
+        Navio *n = &j->frota.navios[i];
+        if (n->acertos < n->tamanho)
+            return false;
+    }
+    return true;
+}
+
 
 Jogador* partida_jogador_atual(Partida *p) {
     if (!p) return NULL;
