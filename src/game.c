@@ -1,51 +1,11 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
 #include "game.h"
 #include "io.h"
-
-typedef struct {
-    char nick1[32];
-    char nick2[32];
-} GameConfig;
-
-GameConfig current_config = {
-    "Jogador 1",
-    "Jogador 2"
-};
-
-
-void partida_inicializar(Partida *p, const char *nome1, const char *nome2,
-                         int linhas, int colunas)
-{
-    p->linhas = linhas;
-    p->colunas = colunas;
-    p->jogador_atual = 1;
-    p->partida_encerrada = false;
-
-    strcpy(p->jogador1.apelido, nome1);
-
-    tabuleiro_inicializar(&p->jogador1.tabuleiro_navios, linhas, colunas);
-    tabuleiro_inicializar(&p->jogador1.mapa_tiros, linhas, colunas);
-
-    frota_inicializar(&p->jogador1.frota);
-
-    strcpy(p->jogador2.apelido, nome2);
-
-    tabuleiro_inicializar(&p->jogador2.tabuleiro_navios, linhas, colunas);
-    tabuleiro_inicializar(&p->jogador2.mapa_tiros, linhas, colunas);
-
-    frota_inicializar(&p->jogador2.frota);
-}
-
-void partida_destruir(Partida *p)
-{
-    tabuleiro_destruir(&p->jogador1.tabuleiro_navios);
-    tabuleiro_destruir(&p->jogador1.mapa_tiros);
-    frota_destruir(&p->jogador1.frota);
-
-    tabuleiro_destruir(&p->jogador2.tabuleiro_navios);
-    tabuleiro_destruir(&p->jogador2.mapa_tiros);
-    frota_destruir(&p->jogador2.frota);
-}
+#include "config.h"   
+#include "board.h"
+#include "fleet.h"
 
 
 bool jogador_inicializar(Jogador *j, const char *apelido, int linhas, int colunas) {
@@ -86,7 +46,7 @@ bool partida_inicializar(Partida *p, const char *apelido1, const char *apelido2,
     p->linhas  = linhas;
     p->colunas = colunas;
     p->partida_encerrada = false;
-    p->jogador_atual = 1; 
+    p->jogador_atual = 1;
 
     if (!jogador_inicializar(&p->jogador1, apelido1, linhas, colunas))
         return false;
@@ -99,8 +59,16 @@ bool partida_inicializar(Partida *p, const char *apelido1, const char *apelido2,
     return true;
 }
 
+void partida_destruir(Partida *p) {
+    if (!p) return;
+
+    jogador_destruir(&p->jogador1);
+    jogador_destruir(&p->jogador2);
+}
+
+
 void game_posicionar_navio_manual(Jogador *j, Navio *n) {
-    int linha, coluna;
+    int linha = 0, coluna = 0;
     Orientacao o;
 
     while (1) {
@@ -124,9 +92,9 @@ void game_posicionar_navio_manual(Jogador *j, Navio *n) {
             continue;
         }
 
+        int id_navio = (int)(n - j->frota.navios);
         frota_posicionar_navio(&j->tabuleiro_navios, &j->frota,
-                               n - j->frota.navios, 
-                               linha, coluna, o);
+                               id_navio, linha, coluna, o);
         break;
     }
 
@@ -143,12 +111,6 @@ void game_posicionar_frota_manual(Jogador *j) {
     printf("\nTodos os navios foram posicionados!\n");
 }
 
-void partida_destruir(Partida *p) {
-    if (!p) return;
-
-    jogador_destruir(&p->jogador1);
-    jogador_destruir(&p->jogador2);
-}
 
 bool game_posicionar_frota_automatica(Jogador *j) {
     if (!j) return false;
@@ -161,12 +123,18 @@ bool game_posicionar_frota_automatica(Jogador *j) {
         t->celulas[i].id_navio = -1;
     }
 
-    return frota_posicionar_automatico(&j->frota, t);
+    return frota_posicionar_automatico(t, &j->frota);
 }
 
+
 ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int coluna) {
+    if (!atirador || !alvo) return TIRO_INVALIDO;
+
     Tabuleiro *navios = &alvo->tabuleiro_navios;
     Tabuleiro *tiros  = &atirador->mapa_tiros;
+
+    if (!tabuleiro_dentro_limites(navios, linha, coluna))
+        return TIRO_INVALIDO;
 
     int idx = tabuleiro_indice(navios, linha, coluna);
 
@@ -191,7 +159,7 @@ ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int 
         frota_registrar_acerto(&alvo->frota, id);
 
         if (frota_navio_afundou(&alvo->frota, id)) {
-            return TIRO_AFUNDOU;   
+            return TIRO_AFUNDOU;
         }
 
         return TIRO_ACERTO;
@@ -201,6 +169,8 @@ ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int 
 }
 
 bool game_frota_destruida(Jogador *j) {
+    if (!j) return false;
+
     for (int i = 0; i < j->frota.quantidade; i++) {
         Navio *n = &j->frota.navios[i];
         if (n->acertos < n->tamanho)
@@ -208,62 +178,6 @@ bool game_frota_destruida(Jogador *j) {
     }
     return true;
 }
-
-void game_turno(Partida *p) {
-    Jogador *atacante = (p->jogador_atual == 1 ? &p->jogador1 : &p->jogador2);
-    Jogador *defensor = (p->jogador_atual == 1 ? &p->jogador2 : &p->jogador1);
-
-    int linha, coluna;
-
-    printf("\n--- Turno de %s ---\n", atacante->apelido);
-    printf("Seu mapa de tiros:\n");
-    imprimir_mapa_tiros(&atacante->mapa_tiros);
-
-    printf("\nDigite a coordenada do tiro:\n");
-
-    io_ler_coordenada(&linha, &coluna);
-
-    ResultadoTiro r = game_tentar_tiro(atacante, defensor, linha, coluna);
-
-    switch (r) {
-        case TIRO_REPETIDO:
-            printf("Você já atirou aqui! Perdeu a vez.\n");
-            break;
-        case TIRO_AGUA:
-            printf("Água!\n");
-            break;
-        case TIRO_ACERTO:
-            printf("Acertou um navio!\n");
-            break;
-        case TIRO_AFUNDOU:
-            printf("Você afundou um navio inimigo!\n");
-            break;
-        default:
-            printf("Erro no tiro.\n");
-            break;
-    }
-
-    p->jogador_atual = (p->jogador_atual == 1 ? 2 : 1);
-}
-
-void game_executar_partida(Partida *p) {
-    printf("\n=== INICIANDO PARTIDA ===\n");
-
-    while (1) {
-        game_turno(p);
-
-        if (game_frota_destruida(&p->jogador1)) {
-            printf("\nFIM DE JOGO! Jogador 2 venceu!\n");
-            return;
-        }
-
-        if (game_frota_destruida(&p->jogador2)) {
-            printf("\nFIM DE JOGO! Jogador 1 venceu!\n");
-            return;
-        }
-    }
-}
-
 
 
 Jogador* partida_jogador_atual(Partida *p) {
@@ -281,43 +195,87 @@ void partida_trocar_turno(Partida *p) {
     p->jogador_atual = (p->jogador_atual == 1 ? 2 : 1);
 }
 
-void game_menu() {
-    int opcao;
 
-    while (1) {
-        opcao = io_menu_principal();
+void game_tela_vitoria(const char *vencedor) {
+    printf("\n=====================================\n");
+    printf("            FIM DE JOGO\n");
+    printf("=====================================\n");
+    printf("       O vencedor foi: %s\n", vencedor);
+    printf("=====================================\n");
+    printf("Pressione ENTER para voltar ao menu...");
+    limparBuffer();
+    getchar();
+}
 
-        switch (opcao) {
+void game_turno(Partida *p) {
+    if (!p) return;
 
-        case 1: { 
-            int linhas = 10;
-            int colunas = 10;
+    Jogador *atual   = partida_jogador_atual(p);
+    Jogador *oponente = partida_jogador_oponente(p);
 
-            Partida p;
-            partida_inicializar(&p, current_config.nick1, current_config.nick2,
-                                linhas, colunas);
+    int linha, coluna;
 
-            printf("\n=== Posicionamento da frota do %s ===\n", p.jogador1.apelido);
-            game_posicionar_frota_manual(&p.jogador1);
+    printf("\n--- Turno de %s ---\n", atual->apelido);
+    io_imprimir_duplo(atual);
 
-            printf("\n=== Posicionamento da frota do %s (automático) ===\n",
-                   p.jogador2.apelido);
-            game_posicionar_frota_automatica(&p.jogador2);
+    printf("\nDigite a coordenada do tiro:\n");
+    io_ler_coordenada(&linha, &coluna);
 
-            game_executar_partida(&p);
-            partida_destruir(&p);
+    ResultadoTiro r = game_tentar_tiro(atual, oponente, linha, coluna);
+
+    switch (r) {
+        case TIRO_INVALIDO:
+            printf("Tiro inválido! Tente novamente no seu próximo turno.\n");
             break;
-        }
 
-        case 2:
-            game_configuracoes();
+        case TIRO_REPETIDO:
+            printf("Você já atirou aí! Perdeu a vez.\n");
             break;
 
-        case 3: 
-            printf("\nSaindo do jogo...\n");
-            return;
+        case TIRO_AGUA:
+            printf("Água! Nenhum navio atingido.\n");
+            break;
+
+        case TIRO_ACERTO:
+            printf("Acertou um navio!\n");
+            break;
+
+        case TIRO_AFUNDOU:
+            printf("Você afundou um navio inimigo!\n");
+            break;
+    }
+
+    bool todos_afundados = true;
+    for (int i = 0; i < oponente->frota.quantidade; i++) {
+        if (!frota_navio_afundou(&oponente->frota, i)) {
+            todos_afundados = false;
+            break;
         }
     }
+
+    if (todos_afundados) {
+        game_tela_vitoria(atual->apelido);
+        p->partida_encerrada = true;
+        return;
+
+    }
+
+    partida_trocar_turno(p);
+}
+
+void game_executar_partida(Partida *p) {
+    if (!p) return;
+
+    p->partida_encerrada = false;
+
+    printf("\nPreparando a partida...\n");
+    printf("Jogador 1: %s\n", p->jogador1.apelido);
+    printf("Jogador 2: %s\n\n", p->jogador2.apelido);
+
+    while (!p->partida_encerrada) {
+        game_turno(p);
+    }
+
 }
 
 
@@ -329,17 +287,58 @@ void game_configuracoes() {
 
         if (op == 1) {
             printf("Novo apelido para Jogador 1: ");
-            limparBuffer(); 
-            lerString(current_config.nick1, 32);
+            limparBuffer();
+            lerString(current_config.nick1, sizeof(current_config.nick1));
             printf("Apelido alterado!\n");
-        }
-
-        else if (op == 2) {
+        } else if (op == 2) {
             printf("Novo apelido para Jogador 2: ");
             limparBuffer();
-            lerString(current_config.nick2, 32);
+            lerString(current_config.nick2, sizeof(current_config.nick2));
             printf("Apelido alterado!\n");
         }
 
     } while (op != 3);
+}
+
+void game_menu() {
+    int opcao;
+
+    while (1) {
+        opcao = io_menu_principal();
+
+        switch (opcao) {
+
+        case 1: {
+            int linhas  = current_config.tamanho;
+            int colunas = current_config.tamanho;
+
+            Partida p;
+
+            if (!partida_inicializar(&p, current_config.nick1, current_config.nick2,
+                                     linhas, colunas))
+            {
+                printf("Erro ao iniciar partida!\n");
+                break;
+            }
+
+            printf("\nPosicionando frota do %s manualmente...\n", p.jogador1.apelido);
+            game_posicionar_frota_manual(&p.jogador1);
+
+            printf("\nPosicionando frota do %s automaticamente...\n", p.jogador2.apelido);
+            game_posicionar_frota_automatica(&p.jogador2);
+
+            game_executar_partida(&p);
+            partida_destruir(&p);
+            break;
+        }
+
+        case 2:
+            game_configuracoes();
+            break;
+
+        case 3:
+            printf("\nSaindo do jogo...\n");
+            return;  
+        }
+    }
 }

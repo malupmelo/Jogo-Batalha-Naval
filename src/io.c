@@ -284,3 +284,7 @@ void io_imprimir_duplo(const Jogador *j) {
 
     printf("==================================================\n");
 }
+
+void io_limpar_tela() {
+    printf("\033[2J\033[H");  
+}
