@@ -27,7 +27,14 @@ typedef struct {
     bool partida_encerrada;
 } Partida;
 
-ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna);
+bool jogador_inicializar(Jogador *j, const char *apelido, int linhas, int colunas);
+void jogador_destruir(Jogador *j);
+
+void partida_inicializar(Partida *p, const char *nome1, const char *nome2,
+                         int linhas, int colunas);
+void partida_destruir(Partida *p);
+
+ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int coluna);
 Jogador* partida_jogador_atual(Partida *p);
 Jogador* partida_jogador_oponente(Partida *p);
 void partida_trocar_turno(Partida *p);
@@ -36,6 +43,19 @@ void marcarAtaque(int linha, int coluna, int resultado, char tabuleiroAtaque[10]
 void lerCoordenadasAtaque(int *linha, int *coluna);
 void realizarTurno(char tabuleiroDefesa[10][10], char tabuleiroAtaque[10][10]);
 int verificarFimDeJogo(char tabuleiroDefesa[10][10]);
+
+ResultadoTiro game_atirar(Jogador *alvo, int linha, int coluna);
+
+void game_turno(Partida *p);
+void game_executar_partida(Partida *p);
+
+void game_menu();
+
+void game_configuracoes();
+
+void game_posicionar_navio_manual(Jogador *j, Navio *n);
+void game_posicionar_frota_manual(Jogador *j);
+
 
 
 
