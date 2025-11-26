@@ -4,7 +4,7 @@
 #include "game.h"
 #include "io.h"
 
-int main() {
+int main(void) {
     aleatorio_inicializar();
 
     game_menu();

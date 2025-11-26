@@ -84,7 +84,8 @@ void game_posicionar_navio_manual(Jogador *j, Navio *n) {
         imprimir_tabuleiro_navios(&j->tabuleiro_navios);
 
         printf("\nEscolha a posição inicial (ex: A5):\n");
-        io_ler_coordenada(&linha, &coluna);
+        io_ler_coordenada(&linha, &coluna, j->tabuleiro_navios.linhas);
+
 
         o = io_ler_orientacao();
 
@@ -128,7 +129,7 @@ bool game_posicionar_frota_automatica(Jogador *j) {
         t->celulas[i].id_navio = -1;
     }
 
-    return frota_posicionar_automatico(&j->frota, t);
+    return frota_posicionar_automatico(t, &j->frota);
 }
 
 ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int coluna) {
@@ -188,7 +189,8 @@ void game_turno(Partida *p) {
 
     printf("\nDigite a coordenada do tiro:\n");
 
-    io_ler_coordenada(&linha, &coluna);
+    io_ler_coordenada(&linha, &coluna, p->linhas);
+
 
     ResultadoTiro r = game_tentar_tiro(atacante, defensor, linha, coluna);
 
@@ -246,7 +248,7 @@ void partida_trocar_turno(Partida *p) {
     p->jogador_atual = (p->jogador_atual == 1 ? 2 : 1);
 }
 
-void game_menu() {
+void game_menu(void) {
     int opcao;
 
     while (1) {
@@ -288,7 +290,7 @@ void game_menu() {
     }
 }
 
-void game_configuracoes() {
+void game_configuracoes(void) {
     int op;
 
     do {
