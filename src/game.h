@@ -30,7 +30,7 @@ typedef struct {
 bool jogador_inicializar(Jogador *j, const char *apelido, int linhas, int colunas);
 void jogador_destruir(Jogador *j);
 
-bool partida_inicializar(Partida *p, const char *apelido1, const char *apelido2,
+void partida_inicializar(Partida *p, const char *nome1, const char *nome2,
                          int linhas, int colunas);
 void partida_destruir(Partida *p);
 
@@ -48,6 +48,10 @@ ResultadoTiro game_atirar(Jogador *alvo, int linha, int coluna);
 
 void game_turno(Partida *p);
 void game_executar_partida(Partida *p);
+
+void game_menu();
+
+
 
 
 

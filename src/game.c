@@ -1,5 +1,41 @@
 #include <stdio.h>
 #include "game.h"
+#include "io.h"
+
+void partida_inicializar(Partida *p, const char *nome1, const char *nome2,
+                         int linhas, int colunas)
+{
+    p->linhas = linhas;
+    p->colunas = colunas;
+    p->jogador_atual = 1;
+    p->partida_encerrada = false;
+
+    strcpy(p->jogador1.apelido, nome1);
+
+    tabuleiro_inicializar(&p->jogador1.tabuleiro_navios, linhas, colunas);
+    tabuleiro_inicializar(&p->jogador1.mapa_tiros, linhas, colunas);
+
+    frota_inicializar(&p->jogador1.frota);
+
+    strcpy(p->jogador2.apelido, nome2);
+
+    tabuleiro_inicializar(&p->jogador2.tabuleiro_navios, linhas, colunas);
+    tabuleiro_inicializar(&p->jogador2.mapa_tiros, linhas, colunas);
+
+    frota_inicializar(&p->jogador2.frota);
+}
+
+void partida_destruir(Partida *p)
+{
+    tabuleiro_destruir(&p->jogador1.tabuleiro_navios);
+    tabuleiro_destruir(&p->jogador1.mapa_tiros);
+    frota_destruir(&p->jogador1.frota);
+
+    tabuleiro_destruir(&p->jogador2.tabuleiro_navios);
+    tabuleiro_destruir(&p->jogador2.mapa_tiros);
+    frota_destruir(&p->jogador2.frota);
+}
+
 
 bool jogador_inicializar(Jogador *j, const char *apelido, int linhas, int colunas) {
     if (!j) return false;
@@ -39,7 +75,7 @@ bool partida_inicializar(Partida *p, const char *apelido1, const char *apelido2,
     p->linhas  = linhas;
     p->colunas = colunas;
     p->partida_encerrada = false;
-    p->jogador_atual = 1; // Jogador 1 começa
+    p->jogador_atual = 1; 
 
     if (!jogador_inicializar(&p->jogador1, apelido1, linhas, colunas))
         return false;
@@ -188,4 +224,37 @@ Jogador* partida_jogador_oponente(Partida *p) {
 void partida_trocar_turno(Partida *p) {
     if (!p) return;
     p->jogador_atual = (p->jogador_atual == 1 ? 2 : 1);
+}
+
+
+void game_menu() {
+    int opcao;
+
+    while (1) {
+        opcao = io_menu_principal();
+
+        if (opcao == 1) {
+            // Novo jogo
+            int linhas = 10;
+            int colunas = 10;
+
+            Partida p;
+            partida_inicializar(&p, "Jogador 1", "Jogador 2", linhas, colunas);
+
+            printf("\nPosicionando frotas automaticamente...\n");
+            game_posicionar_frota_automatica(&p.jogador1);
+            game_posicionar_frota_automatica(&p.jogador2);
+
+            game_executar_partida(&p);
+            partida_destruir(&p);
+        }
+        else if (opcao == 2) {
+            printf("\n=== Configurações ===\n");
+            printf("Função ainda não implementada.\n\n");
+        }
+        else if (opcao == 3) {
+            printf("\nSaindo do jogo...\n");
+            break;
+        }
+    }
 }
