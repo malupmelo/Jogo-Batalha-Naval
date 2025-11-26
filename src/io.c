@@ -5,6 +5,7 @@
 #include "board.h"
 #include "fleet.h"
 #include <stdbool.h>
+#include "game.h"
 
 void limparBuffer(void) {
     int c;
@@ -230,4 +231,56 @@ Orientacao io_ler_orientacao() {
 
         printf("Entrada inválida! Use H ou V.\n");
     }
+}
+
+void io_imprimir_duplo(const Jogador *j) {
+    const Tabuleiro *tiros = &j->mapa_tiros;
+    const Tabuleiro *navios = &j->tabuleiro_navios;
+
+    int linhas = tiros->linhas;
+    int colunas = tiros->colunas;
+
+    printf("\n================== VISUALIZAÇÃO ==================\n");
+    printf(" ATAQUES                             SEU TABULEIRO\n\n");
+
+    printf("    ");
+    for (int c = 0; c < colunas; c++)
+        printf(" %c ", 'A' + c);
+
+    printf("          "); 
+
+    for (int c = 0; c < colunas; c++)
+        printf(" %c ", 'A' + c);
+
+    printf("\n");
+
+    for (int r = 0; r < linhas; r++) {
+        printf("%2d  ", r + 1);
+
+        for (int c = 0; c < colunas; c++) {
+            int i = tabuleiro_indice(tiros, r, c);
+            char simb =
+                (tiros->celulas[i].estado == CELULA_ACERTO) ? 'X' :
+                (tiros->celulas[i].estado == CELULA_ERRO)   ? '·' :
+                                                             '~';
+            printf(" %c ", simb);
+        }
+
+        printf("       "); 
+
+        printf("%2d  ", r + 1);
+        for (int c = 0; c < colunas; c++) {
+            int i = tabuleiro_indice(navios, r, c);
+            char simb =
+                (navios->celulas[i].estado == CELULA_NAVIO)  ? '#' :
+                (navios->celulas[i].estado == CELULA_ACERTO) ? 'X' :
+                (navios->celulas[i].estado == CELULA_ERRO)   ? '·' :
+                                                                '~';
+            printf(" %c ", simb);
+        }
+
+        printf("\n");
+    }
+
+    printf("==================================================\n");
 }
