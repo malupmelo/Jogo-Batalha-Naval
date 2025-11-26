@@ -2,6 +2,17 @@
 #include "game.h"
 #include "io.h"
 
+typedef struct {
+    char nick1[32];
+    char nick2[32];
+} GameConfig;
+
+GameConfig current_config = {
+    "Jogador 1",
+    "Jogador 2"
+};
+
+
 void partida_inicializar(Partida *p, const char *nome1, const char *nome2,
                          int linhas, int colunas)
 {
@@ -239,7 +250,9 @@ void game_menu() {
             int colunas = 10;
 
             Partida p;
-            partida_inicializar(&p, "Jogador 1", "Jogador 2", linhas, colunas);
+            Partida p;
+            partida_inicializar(&p, current_config.nick1, current_config.nick2, linhas, colunas);
+
 
             printf("\nPosicionando frotas automaticamente...\n");
             game_posicionar_frota_automatica(&p.jogador1);
@@ -249,12 +262,34 @@ void game_menu() {
             partida_destruir(&p);
         }
         else if (opcao == 2) {
-            printf("\n=== Configurações ===\n");
-            printf("Função ainda não implementada.\n\n");
+            game_configuracoes();
         }
         else if (opcao == 3) {
             printf("\nSaindo do jogo...\n");
             break;
         }
     }
+}
+
+void game_configuracoes() {
+    int op;
+
+    do {
+        op = io_menu_configuracoes();
+
+        if (op == 1) {
+            printf("Novo apelido para Jogador 1: ");
+            limparBuffer(); 
+            lerString(current_config.nick1, 32);
+            printf("Apelido alterado!\n");
+        }
+
+        else if (op == 2) {
+            printf("Novo apelido para Jogador 2: ");
+            limparBuffer();
+            lerString(current_config.nick2, 32);
+            printf("Apelido alterado!\n");
+        }
+
+    } while (op != 3);
 }

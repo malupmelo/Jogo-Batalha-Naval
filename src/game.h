@@ -51,6 +51,8 @@ void game_executar_partida(Partida *p);
 
 void game_menu();
 
+void game_configuracoes();
+
 
 
 
