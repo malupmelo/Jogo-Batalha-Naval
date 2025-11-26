@@ -192,23 +192,24 @@ bool io_ler_coordenada(int *linha, int *coluna, int limite) {
 }
 
 int io_menu_configuracoes() {
-    int op = -1;
+    int op;
 
     printf("\n=== CONFIGURAÇÕES ===\n");
     printf("1) Alterar apelido do Jogador 1\n");
     printf("2) Alterar apelido do Jogador 2\n");
-    printf("3) Voltar ao menu principal\n");
-    printf("Escolha: ");
+    printf("3) Alterar tamanho do tabuleiro\n");
+    printf("4) Voltar ao menu principal\n");
+    printf("Escolha uma opção: ");
 
     while (1) {
         if (scanf("%d", &op) != 1) {
             limparBuffer();
-            printf("Entrada inválida. Digite 1, 2 ou 3: ");
+            printf("Entrada inválida. Tente novamente: ");
             continue;
         }
 
-        if (op < 1 || op > 3) {
-            printf("Opção inválida. Digite 1, 2 ou 3: ");
+        if (op < 1 || op > 4) {
+            printf("Opção inexistente. Escolha entre 1 e 4: ");
             continue;
         }
 
@@ -233,6 +234,10 @@ Orientacao io_ler_orientacao() {
     }
 }
 
+void io_limpar_tela() {
+    printf("\033[2J\033[H");  
+}
+
 void io_imprimir_duplo(const Jogador *j) {
     const Tabuleiro *tiros = &j->mapa_tiros;
     const Tabuleiro *navios = &j->tabuleiro_navios;
@@ -240,14 +245,14 @@ void io_imprimir_duplo(const Jogador *j) {
     int linhas = tiros->linhas;
     int colunas = tiros->colunas;
 
-    printf("\n================== VISUALIZAÇÃO ==================\n");
-    printf(" ATAQUES                             SEU TABULEIRO\n\n");
-
+    printf("\n");
+    printf("        SEUS TIROS                      SEUS NAVIOS\n");
     printf("    ");
+
     for (int c = 0; c < colunas; c++)
         printf(" %c ", 'A' + c);
 
-    printf("          "); 
+    printf("           ");
 
     for (int c = 0; c < colunas; c++)
         printf(" %c ", 'A' + c);
@@ -255,36 +260,43 @@ void io_imprimir_duplo(const Jogador *j) {
     printf("\n");
 
     for (int r = 0; r < linhas; r++) {
+
         printf("%2d  ", r + 1);
 
         for (int c = 0; c < colunas; c++) {
             int i = tabuleiro_indice(tiros, r, c);
-            char simb =
-                (tiros->celulas[i].estado == CELULA_ACERTO) ? 'X' :
-                (tiros->celulas[i].estado == CELULA_ERRO)   ? '·' :
-                                                             '~';
-            printf(" %c ", simb);
+
+            char simbolo;
+            if (tiros->celulas[i].estado == CELULA_ACERTO)
+                simbolo = 'X';
+            else if (tiros->celulas[i].estado == CELULA_ERRO)
+                simbolo = '·';
+            else
+                simbolo = '~';
+
+            printf(" %c ", simbolo);
         }
 
-        printf("       "); 
+        printf("       ");
 
         printf("%2d  ", r + 1);
+
         for (int c = 0; c < colunas; c++) {
             int i = tabuleiro_indice(navios, r, c);
-            char simb =
-                (navios->celulas[i].estado == CELULA_NAVIO)  ? '#' :
-                (navios->celulas[i].estado == CELULA_ACERTO) ? 'X' :
-                (navios->celulas[i].estado == CELULA_ERRO)   ? '·' :
-                                                                '~';
-            printf(" %c ", simb);
+
+            char simbolo;
+            switch (navios->celulas[i].estado) {
+                case CELULA_AGUA:   simbolo = '~'; break;
+                case CELULA_NAVIO:  simbolo = '#'; break;
+                case CELULA_ACERTO: simbolo = 'X'; break;
+                case CELULA_ERRO:   simbolo = '·'; break;
+                default: simbolo = '?';
+            }
+
+            printf(" %c ", simbolo);
         }
 
         printf("\n");
     }
-
-    printf("==================================================\n");
 }
 
-void io_limpar_tela() {
-    printf("\033[2J\033[H");  
-}

@@ -4,14 +4,10 @@
 #include "config.h"
 
 int main() {
-    aleatorio_inicializar();
+    aleatorio_inicializar();   
+    config_inicializar();      
 
-    game_menu();
+    game_menu();               
 
     return 0;
-}
-
-int main() {
-    config_inicializar();
-    game_menu();
 }

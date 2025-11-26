@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "game.h"
 #include "io.h"
-#include "config.h"   
+#include "config.h"
 #include "board.h"
 #include "fleet.h"
 
@@ -78,7 +78,7 @@ void game_posicionar_navio_manual(Jogador *j, Navio *n) {
         imprimir_tabuleiro_navios(&j->tabuleiro_navios);
 
         printf("\nEscolha a posição inicial (ex: A5):\n");
-        io_ler_coordenada(&linha, &coluna);
+        io_ler_coordenada(&linha, &coluna, j->tabuleiro_navios.colunas);
 
         o = io_ler_orientacao();
 
@@ -111,7 +111,6 @@ void game_posicionar_frota_manual(Jogador *j) {
     printf("\nTodos os navios foram posicionados!\n");
 }
 
-
 bool game_posicionar_frota_automatica(Jogador *j) {
     if (!j) return false;
 
@@ -123,7 +122,7 @@ bool game_posicionar_frota_automatica(Jogador *j) {
         t->celulas[i].id_navio = -1;
     }
 
-    return frota_posicionar_automatico(t, &j->frota);
+    return frota_posicionar_automatico(&j->tabuleiro_navios, &j->frota);
 }
 
 
@@ -210,22 +209,22 @@ void game_tela_vitoria(const char *vencedor) {
 void game_turno(Partida *p) {
     if (!p) return;
 
-    Jogador *atual   = partida_jogador_atual(p);
+    Jogador *atual    = partida_jogador_atual(p);
     Jogador *oponente = partida_jogador_oponente(p);
 
-    int linha, coluna;
+    int linha = 0, coluna = 0;
 
     printf("\n--- Turno de %s ---\n", atual->apelido);
     io_imprimir_duplo(atual);
 
     printf("\nDigite a coordenada do tiro:\n");
-    io_ler_coordenada(&linha, &coluna);
+    io_ler_coordenada(&linha, &coluna, atual->tabuleiro_navios.colunas);
 
     ResultadoTiro r = game_tentar_tiro(atual, oponente, linha, coluna);
 
     switch (r) {
         case TIRO_INVALIDO:
-            printf("Tiro inválido! Tente novamente no seu próximo turno.\n");
+            printf("Tiro inválido!\n");
             break;
 
         case TIRO_REPETIDO:
@@ -233,15 +232,15 @@ void game_turno(Partida *p) {
             break;
 
         case TIRO_AGUA:
-            printf("Água! Nenhum navio atingido.\n");
+            printf("Água!\n");
             break;
 
         case TIRO_ACERTO:
-            printf("Acertou um navio!\n");
+            printf("Acertou!\n");
             break;
 
         case TIRO_AFUNDOU:
-            printf("Você afundou um navio inimigo!\n");
+            printf("Você afundou um navio!\n");
             break;
     }
 
@@ -257,7 +256,6 @@ void game_turno(Partida *p) {
         game_tela_vitoria(atual->apelido);
         p->partida_encerrada = true;
         return;
-
     }
 
     partida_trocar_turno(p);
@@ -268,7 +266,7 @@ void game_executar_partida(Partida *p) {
 
     p->partida_encerrada = false;
 
-    printf("\nPreparando a partida...\n");
+    printf("\nIniciando partida...\n");
     printf("Jogador 1: %s\n", p->jogador1.apelido);
     printf("Jogador 2: %s\n\n", p->jogador2.apelido);
 
@@ -276,6 +274,7 @@ void game_executar_partida(Partida *p) {
         game_turno(p);
     }
 
+    printf("\nPartida encerrada!\n");
 }
 
 
@@ -295,12 +294,33 @@ void game_configuracoes() {
             limparBuffer();
             lerString(current_config.nick2, sizeof(current_config.nick2));
             printf("Apelido alterado!\n");
+        } else if (op == 3) {
+            int novo_tam = 0;
+
+            printf("Novo tamanho do tabuleiro (7 a 12): ");
+            while (1) {
+                if (scanf("%d", &novo_tam) != 1) {
+                    limparBuffer();
+                    printf("Entrada inválida. Digite um número: ");
+                    continue;
+                }
+
+                if (novo_tam < 7 || novo_tam > 12) {
+                    printf("Tamanho fora do intervalo. Escolha entre 7 e 12: ");
+                    continue;
+                }
+
+                break;
+            }
+
+            current_config.tamanho = novo_tam;
+            printf("Tamanho do tabuleiro alterado para %d!\n", novo_tam);
         }
 
-    } while (op != 3);
+    } while (op != 4);
 }
 
-void game_menu() {
+void game_menu(void) {
     int opcao;
 
     while (1) {
@@ -309,26 +329,25 @@ void game_menu() {
         switch (opcao) {
 
         case 1: {
-            int linhas  = current_config.tamanho;
-            int colunas = current_config.tamanho;
+            int tamanho = current_config.tamanho;
 
             Partida p;
 
             if (!partida_inicializar(&p, current_config.nick1, current_config.nick2,
-                                     linhas, colunas))
+                                     tamanho, tamanho))
             {
                 printf("Erro ao iniciar partida!\n");
                 break;
             }
 
-            printf("\nPosicionando frota do %s manualmente...\n", p.jogador1.apelido);
-            game_posicionar_frota_manual(&p.jogador1);
-
-            printf("\nPosicionando frota do %s automaticamente...\n", p.jogador2.apelido);
+            printf("\nPosicionando frotas automaticamente...\n");
+            game_posicionar_frota_automatica(&p.jogador1);
             game_posicionar_frota_automatica(&p.jogador2);
 
             game_executar_partida(&p);
+
             partida_destruir(&p);
+
             break;
         }
 
@@ -338,7 +357,7 @@ void game_menu() {
 
         case 3:
             printf("\nSaindo do jogo...\n");
-            return;  
+            return;
         }
     }
 }
