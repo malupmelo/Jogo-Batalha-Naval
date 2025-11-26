@@ -99,6 +99,50 @@ bool partida_inicializar(Partida *p, const char *apelido1, const char *apelido2,
     return true;
 }
 
+void game_posicionar_navio_manual(Jogador *j, Navio *n) {
+    int linha, coluna;
+    Orientacao o;
+
+    while (1) {
+        printf("\nPosicionando navio: %s (tamanho %d)\n",
+               n->nome, n->tamanho);
+
+        imprimir_tabuleiro_navios(&j->tabuleiro_navios);
+
+        printf("\nEscolha a posição inicial (ex: A5):\n");
+        io_ler_coordenada(&linha, &coluna);
+
+        o = io_ler_orientacao();
+
+        if (!frota_cabe_no_tabuleiro(&j->tabuleiro_navios, linha, coluna, n->tamanho, o)) {
+            printf("O navio não cabe nessa posição!\n");
+            continue;
+        }
+
+        if (frota_colide(&j->tabuleiro_navios, linha, coluna, n->tamanho, o)) {
+            printf("O navio colide com outro!\n");
+            continue;
+        }
+
+        frota_posicionar_navio(&j->tabuleiro_navios, &j->frota,
+                               n - j->frota.navios, 
+                               linha, coluna, o);
+        break;
+    }
+
+    imprimir_tabuleiro_navios(&j->tabuleiro_navios);
+}
+
+void game_posicionar_frota_manual(Jogador *j) {
+    printf("\n=== Posicionamento manual de %s ===\n", j->apelido);
+
+    for (int i = 0; i < j->frota.quantidade; i++) {
+        game_posicionar_navio_manual(j, &j->frota.navios[i]);
+    }
+
+    printf("\nTodos os navios foram posicionados!\n");
+}
+
 void partida_destruir(Partida *p) {
     if (!p) return;
 
@@ -237,39 +281,45 @@ void partida_trocar_turno(Partida *p) {
     p->jogador_atual = (p->jogador_atual == 1 ? 2 : 1);
 }
 
-
 void game_menu() {
     int opcao;
 
     while (1) {
         opcao = io_menu_principal();
 
-        if (opcao == 1) {
-            // Novo jogo
+        switch (opcao) {
+
+        case 1: { 
             int linhas = 10;
             int colunas = 10;
 
             Partida p;
-            Partida p;
-            partida_inicializar(&p, current_config.nick1, current_config.nick2, linhas, colunas);
+            partida_inicializar(&p, current_config.nick1, current_config.nick2,
+                                linhas, colunas);
 
+            printf("\n=== Posicionamento da frota do %s ===\n", p.jogador1.apelido);
+            game_posicionar_frota_manual(&p.jogador1);
 
-            printf("\nPosicionando frotas automaticamente...\n");
-            game_posicionar_frota_automatica(&p.jogador1);
+            printf("\n=== Posicionamento da frota do %s (automático) ===\n",
+                   p.jogador2.apelido);
             game_posicionar_frota_automatica(&p.jogador2);
 
             game_executar_partida(&p);
             partida_destruir(&p);
-        }
-        else if (opcao == 2) {
-            game_configuracoes();
-        }
-        else if (opcao == 3) {
-            printf("\nSaindo do jogo...\n");
             break;
+        }
+
+        case 2:
+            game_configuracoes();
+            break;
+
+        case 3: 
+            printf("\nSaindo do jogo...\n");
+            return;
         }
     }
 }
+
 
 void game_configuracoes() {
     int op;

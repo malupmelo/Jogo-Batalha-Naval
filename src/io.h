@@ -18,3 +18,4 @@ bool io_ler_coordenada(int *linha, int *coluna);
 
 int io_menu_configuracoes();
 
+Orientacao io_ler_orientacao();

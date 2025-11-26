@@ -216,3 +216,18 @@ int io_menu_configuracoes() {
 
     return op;
 }
+
+Orientacao io_ler_orientacao() {
+    char c;
+
+    while (1) {
+        printf("Orientação (H para horizontal, V para vertical): ");
+        scanf(" %c", &c);
+        c = toupper(c);
+
+        if (c == 'H') return ORIENTACAO_HORIZONTAL;
+        if (c == 'V') return ORIENTACAO_VERTICAL;
+
+        printf("Entrada inválida! Use H ou V.\n");
+    }
+}

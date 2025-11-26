@@ -53,6 +53,9 @@ void game_menu();
 
 void game_configuracoes();
 
+void game_posicionar_navio_manual(Jogador *j, Navio *n);
+void game_posicionar_frota_manual(Jogador *j);
+
 
 
 
