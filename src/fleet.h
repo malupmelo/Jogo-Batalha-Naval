@@ -1,5 +1,6 @@
 #pragma once
 #include <stdbool.h>
+#include "board.h"
 
 typedef struct {
     char nome[20];   

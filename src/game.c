@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "game.h"
+#include "io.h"       
+#include "rnd.h"      
 
 ResultadoTiro game_tentar_tiro(Partida *p, int linha, int coluna) {
     if (!p) return TIRO_INVALIDO;

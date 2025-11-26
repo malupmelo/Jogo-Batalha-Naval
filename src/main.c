@@ -2,6 +2,8 @@
 #include "board.h"
 #include "fleet.h"
 #include "rnd.h"
+#include "game.h"
+#include "io.h"
 
 int main(void) {
     printf("=== BATALHA NAVAL ===\n");

@@ -1,7 +1,7 @@
 #include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
+#include <string.h>  
 #include "fleet.h"
-#include "board.h"
 #include "rnd.h"
 
 static void navio_definir(Navio *n, const char *nome, int tamanho) {
