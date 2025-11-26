@@ -190,33 +190,35 @@ bool io_ler_coordenada(int *linha, int *coluna, int limite) {
                'A' + limite - 1, limite);
     }
 }
-
 int io_menu_configuracoes(void) {
-    int op = -1;
+    int opcao = -1;
 
     printf("\n=== CONFIGURAÇÕES ===\n");
     printf("1) Alterar apelido do Jogador 1\n");
     printf("2) Alterar apelido do Jogador 2\n");
-    printf("3) Voltar ao menu principal\n");
-    printf("Escolha: ");
+    printf("3) Alterar tamanho do tabuleiro (6 a 26)\n");
+    printf("4) Voltar\n");
+    printf("Escolha uma opção: ");
 
     while (1) {
-        if (scanf("%d", &op) != 1) {
+        if (scanf("%d", &opcao) != 1) {
             limparBuffer();
-            printf("Entrada inválida. Digite 1, 2 ou 3: ");
+            printf("Entrada inválida. Digite 1, 2, 3 ou 4: ");
             continue;
         }
 
-        if (op < 1 || op > 3) {
-            printf("Opção inválida. Digite 1, 2 ou 3: ");
+        if (opcao < 1 || opcao > 4) {
+            printf("Opção inválida. Digite 1, 2, 3 ou 4: ");
             continue;
         }
 
         break;
     }
 
-    return op;
+    limparBuffer();
+    return opcao;
 }
+
 
 Orientacao io_ler_orientacao(void) {
     char c;

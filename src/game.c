@@ -4,6 +4,7 @@
 #include "game.h"
 #include "io.h"
 #include "rnd.h"
+#include <stdlib.h>  
 
 typedef struct {
     char nick1[32];
@@ -14,6 +15,9 @@ GameConfig current_config = {
     "Jogador 1",
     "Jogador 2"
 };
+
+int current_board_size = 10;  // tamanho padrão 10x10
+
 
 bool jogador_inicializar(Jogador *j, const char *apelido, int linhas, int colunas) {
     if (!j) return false;
@@ -257,14 +261,15 @@ void game_menu(void) {
         switch (opcao) {
 
         case 1: {
-            int linhas = 10;
-            int colunas = 10;
-
+            int linhas = current_board_size;
+            int colunas = current_board_size;
+        
             Partida p;
             if (!partida_inicializar(&p, current_config.nick1, current_config.nick2,
                                      linhas, colunas)) {
                 printf("Erro ao iniciar partida.\n");
                 break;
+        
             }
 
             printf("\n=== Posicionamento da frota do %s ===\n", p.jogador1.apelido);
@@ -292,6 +297,7 @@ void game_menu(void) {
 
 void game_configuracoes(void) {
     int op;
+    int novo_tamanho;
 
     do {
         op = io_menu_configuracoes();
@@ -302,13 +308,39 @@ void game_configuracoes(void) {
             lerString(current_config.nick1, 32);
             printf("Apelido alterado!\n");
         }
-
         else if (op == 2) {
             printf("Novo apelido para Jogador 2: ");
             limparBuffer();
             lerString(current_config.nick2, 32);
             printf("Apelido alterado!\n");
         }
+        else if (op == 3) {
+            // altera tamanho do tabuleiro
+            while (1) {
+                printf("Novo tamanho do tabuleiro (6 a 26): ");
 
-    } while (op != 3);
+                if (scanf("%d", &novo_tamanho) != 1) {
+                    limparBuffer();
+                    printf("Entrada inválida. Digite um número entre 6 e 26.\n");
+                    continue;
+                }
+
+                if (novo_tamanho < 6 || novo_tamanho > 26) {
+                    printf("Valor inválido! Digite um número entre 6 e 26.\n");
+                    continue;
+                }
+
+                break;
+            }
+
+            limparBuffer();
+            current_board_size = novo_tamanho;
+            printf("Tamanho do tabuleiro alterado para %d x %d!\n",
+                   current_board_size, current_board_size);
+        }
+
+        // se op == 4, apenas sai do laço e volta ao menu principal
+
+    } while (op != 4);
 }
+
