@@ -159,3 +159,17 @@ bool frota_posicionar_automatico(Tabuleiro *t, Frota *f) {
 
     return true;
 }
+
+int frota_navios_restantes(const Frota *f) {
+    if (!f) return 0;
+
+    int count = 0;
+    for (int i = 0; i < f->quantidade; i++) {
+        const Navio *n = &f->navios[i];
+        if (n->acertos < n->tamanho) {
+            count++;
+        }
+    }
+    return count;
+}
+

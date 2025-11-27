@@ -80,7 +80,6 @@ void lerCoordenada(int *linha, int *coluna, int limite) {
 }
 
 
-
 void imprimir_tabuleiro_navios(const Tabuleiro *t) {
     if (!t) return;
 
@@ -98,15 +97,31 @@ void imprimir_tabuleiro_navios(const Tabuleiro *t) {
             int i = tabuleiro_indice(t, r, c);
 
             char simbolo;
+            const char *cor = COR_RESET;
+
             switch (t->celulas[i].estado) {
-                case CELULA_AGUA:   simbolo = '~'; break;
-                case CELULA_NAVIO:  simbolo = '#'; break;
-                case CELULA_ACERTO: simbolo = 'X'; break;
-                case CELULA_ERRO:   simbolo = '.'; break;
-                default: simbolo = '?';
+                case CELULA_AGUA:
+                    simbolo = '~';
+                    cor = COR_CIANO;
+                    break;
+                case CELULA_NAVIO:
+                    simbolo = '#';
+                    cor = COR_AZUL;
+                    break;
+                case CELULA_ACERTO:
+                    simbolo = 'X';
+                    cor = COR_VERMELHO;
+                    break;
+                case CELULA_ERRO:
+                    simbolo = '.';
+                    cor = COR_AMARELO;
+                    break;
+                default:
+                    simbolo = '?';
+                    cor = COR_RESET;
             }
 
-            printf(" %c ", simbolo);
+            printf(" %s%c%s ", cor, simbolo, COR_RESET);
         }
         printf("\n");
     }
@@ -129,20 +144,24 @@ void imprimir_mapa_tiros(const Tabuleiro *t) {
             int i = tabuleiro_indice(t, r, c);
 
             char simbolo;
+            const char *cor = COR_RESET;
 
-            if (t->celulas[i].estado == CELULA_ACERTO)
+            if (t->celulas[i].estado == CELULA_ACERTO) {
                 simbolo = 'X';
-            else if (t->celulas[i].estado == CELULA_ERRO)
+                cor = COR_VERMELHO;
+            } else if (t->celulas[i].estado == CELULA_ERRO) {
                 simbolo = '.';
-            else
+                cor = COR_AMARELO;
+            } else {
                 simbolo = '~';
+                cor = COR_CIANO;
+            }
 
-            printf(" %c ", simbolo);
+            printf(" %s%c%s ", cor, simbolo, COR_RESET);
         }
         printf("\n");
     }
 }
-
 
 int io_menu_principal(void) {
     int opcao = -1;
@@ -242,16 +261,17 @@ void io_limpar_tela(void) {
 }
 
 void io_imprimir_duplo(const Jogador *j) {
-    const Tabuleiro *tiros = &j->mapa_tiros;
+    const Tabuleiro *tiros  = &j->mapa_tiros;
     const Tabuleiro *navios = &j->tabuleiro_navios;
 
-    int linhas = tiros->linhas;
+    int linhas  = tiros->linhas;
     int colunas = tiros->colunas;
 
     printf("\n");
     printf("        SEUS TIROS                      SEUS NAVIOS\n");
     printf("    ");
 
+    
     for (int c = 0; c < colunas; c++)
         printf(" %c ", 'A' + c);
 
@@ -264,39 +284,63 @@ void io_imprimir_duplo(const Jogador *j) {
 
     for (int r = 0; r < linhas; r++) {
 
+    
         printf("%2d  ", r + 1);
 
         for (int c = 0; c < colunas; c++) {
             int i = tabuleiro_indice(tiros, r, c);
 
             char simbolo;
-            if (tiros->celulas[i].estado == CELULA_ACERTO)
-                simbolo = 'X';
-            else if (tiros->celulas[i].estado == CELULA_ERRO)
-                simbolo = '.';
-            else
-                simbolo = '~';
+            const char *cor = COR_RESET;
 
-            printf(" %c ", simbolo);
+            if (tiros->celulas[i].estado == CELULA_ACERTO) {
+                simbolo = 'X';
+                cor = COR_VERMELHO;
+            } else if (tiros->celulas[i].estado == CELULA_ERRO) {
+                simbolo = '.';
+                cor = COR_AMARELO;
+            } else {
+                simbolo = '~';
+                cor = COR_CIANO;
+            }
+
+            printf(" %s%c%s ", cor, simbolo, COR_RESET);
         }
 
         printf("       ");
 
+        
         printf("%2d  ", r + 1);
 
         for (int c = 0; c < colunas; c++) {
             int i = tabuleiro_indice(navios, r, c);
 
             char simbolo;
+            const char *cor = COR_RESET;
+
             switch (navios->celulas[i].estado) {
-                case CELULA_AGUA:   simbolo = '~'; break;
-                case CELULA_NAVIO:  simbolo = '#'; break;
-                case CELULA_ACERTO: simbolo = 'X'; break;
-                case CELULA_ERRO:   simbolo = '.'; break;
-                default: simbolo = '?';
+                case CELULA_AGUA:
+                    simbolo = '~';
+                    cor = COR_CIANO;
+                    break;
+                case CELULA_NAVIO:
+                    simbolo = '#';
+                    cor = COR_AZUL;
+                    break;
+                case CELULA_ACERTO:
+                    simbolo = 'X';
+                    cor = COR_VERMELHO;
+                    break;
+                case CELULA_ERRO:
+                    simbolo = '.';
+                    cor = COR_AMARELO;
+                    break;
+                default:
+                    simbolo = '?';
+                    cor = COR_RESET;
             }
 
-            printf(" %c ", simbolo);
+            printf(" %s%c%s ", cor, simbolo, COR_RESET);
         }
 
         printf("\n");

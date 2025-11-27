@@ -7,6 +7,9 @@
 #include "board.h"
 #include "fleet.h"
 
+static char ultimo_navio_afundado[32] = "";
+
+
 
 bool jogador_inicializar(Jogador *j, const char *apelido, int linhas, int colunas) {
     if (!j) return false;
@@ -164,6 +167,12 @@ ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int 
         atirador->tiros_acertados++;
 
         if (frota_navio_afundou(&alvo->frota, id)) {
+            strncpy(ultimo_navio_afundado,
+                alvo->frota.navios[id].nome,
+                sizeof(ultimo_navio_afundado) - 1);
+        ultimo_navio_afundado[sizeof(ultimo_navio_afundado) - 1] = '\0';
+
+
             return TIRO_AFUNDOU;
         }
 
@@ -211,7 +220,6 @@ void game_tela_vitoria(const char *vencedor) {
     limparBuffer();
     getchar();
 }
-
 void game_turno(Partida *p) {
     if (!p) return;
 
@@ -229,6 +237,7 @@ void game_turno(Partida *p) {
     ResultadoTiro r = game_tentar_tiro(atual, oponente, linha, coluna);
 
     switch (r) {
+
         case TIRO_INVALIDO:
             printf("Tiro inválido!\n");
             break;
@@ -245,27 +254,28 @@ void game_turno(Partida *p) {
             printf("Acertou!\n");
             break;
 
-        case TIRO_AFUNDOU:
-            printf("Você afundou um navio!\n");
-            break;
-    }
+        case TIRO_AFUNDOU: {
+            int restantes = frota_navios_restantes(&oponente->frota);
 
-    bool todos_afundados = true;
-    for (int i = 0; i < oponente->frota.quantidade; i++) {
-        if (!frota_navio_afundou(&oponente->frota, i)) {
-            todos_afundados = false;
+            if (ultimo_navio_afundado[0] != '\0') {
+                printf("Você afundou o navio %s!\n", ultimo_navio_afundado);
+            } else {
+                printf("Você afundou um navio inimigo!\n");
+            }
+
+            if (restantes > 0) {
+                printf("Ainda restam %d navios inimigos.\n", restantes);
+            } else {
+                printf("Você destruiu toda a frota inimiga!\n");
+            }
+
             break;
         }
     }
 
-    if (todos_afundados) {
-        game_tela_vitoria(atual->apelido);
-        p->partida_encerrada = true;
-        return;
-    }
-
     partida_trocar_turno(p);
 }
+
 
 void game_imprimir_estatisticas(Jogador *j1, Jogador *j2) {
     printf("\n===== ESTATÍSTICAS DA PARTIDA =====\n");

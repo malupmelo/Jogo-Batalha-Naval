@@ -26,6 +26,8 @@ int frota_linha_aleatoria(const Tabuleiro *t);
 int frota_coluna_aleatoria(const Tabuleiro *t);
 Orientacao frota_orientacao_aleatoria(void);
 bool frota_posicionar_automatico(Tabuleiro *t, Frota *f);
+int frota_navios_restantes(const Frota *f);
+
 
 
 
