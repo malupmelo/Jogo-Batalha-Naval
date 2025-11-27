@@ -51,12 +51,12 @@ make clean
 ---
 
 ### Funcionalidades Implementadas
-* Menus completos
+1. Menus completos
 - Menu principal
 - Menu de configurações
 - Validação de todas as entradas
 
-* Configurações do jogo
+2. Configurações do jogo
 - Alteração de apelidos
 - Tamanho do tabuleiro ajustável (6 a 26)
 - Modos de posicionamento:
@@ -64,41 +64,42 @@ make clean
 - Ambos automáticos
 - Ambos manuais
 
-* Posicionamento da frota
+3. Posicionamento da frota
 - Automático (aleatório e seguro)
 - Manual (com validação de posição e orientação H/V)
 
-* Mecânica do jogo
--Turnos alternados
--Leitura de coordenadas estilo A5, C10…
--Tratamento de:
- Tiro repetido
- Acerto
- Água
- Afundamento com nome do navio
- Contagem de navios restantes
- Detecção automática de vitória
+4. Mecânica do jogo
+- Turnos alternados
+- Leitura de coordenadas estilo A5, C10…
+- Tratamento de:
+  Tiro repetido
+  Acerto
+  Água
+  Afundamento com nome do navio
+  Contagem de navios restantes
+  Detecção automática de vitória
 
-* Estatísticas por jogador
--Tiros disparados
--Tiros acertados
--Precisão %
--Impressão ao final da partida
+5. Estatísticas por jogador
+- Tiros disparados
+- Tiros acertados
+- Precisão %
+- Impressão ao final da partida
 
-* Interface visual aprimorada
--Dois tabuleiros lado a lado (tiros + navios)
--Cores ANSI:
- Azul → água
- Amarelo → erro
- Verde → acerto
- Vermelho → afundado
- Feedback claro a cada jogada
+6. Interface visual aprimorada
+- Dois tabuleiros lado a lado (tiros + navios)
+- Cores ANSI:
+  Azul → água
+  Amarelo → erro
+  Verde → acerto
+  Vermelho → afundado
+  Feedback claro a cada jogada
 
 ## Nossa Equipe
 
 - Denise Hollanda  
 - João Victor Astle  
 - Maria Luiza Melo  
+
 
 
 
