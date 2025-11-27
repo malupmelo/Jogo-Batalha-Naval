@@ -52,23 +52,23 @@ make clean
 
 ### Funcionalidades Implementadas
 * Menus completos
--Menu principal
--Menu de configurações
--Validação de todas as entradas
+- Menu principal
+- Menu de configurações
+- Validação de todas as entradas
 
 * Configurações do jogo
--Alteração de apelidos
--Tamanho do tabuleiro ajustável (6 a 26)
--Modos de posicionamento:
--J1 manual / J2 automático
--Ambos automáticos
--Ambos manuais
+- Alteração de apelidos
+- Tamanho do tabuleiro ajustável (6 a 26)
+- Modos de posicionamento:
+- J1 manual / J2 automático
+- Ambos automáticos
+- Ambos manuais
 
 * Posicionamento da frota
--Automático (aleatório e seguro)
--Manual (com validação de posição e orientação H/V)
+- Automático (aleatório e seguro)
+- Manual (com validação de posição e orientação H/V)
 
-*Mecânica do jogo
+* Mecânica do jogo
 -Turnos alternados
 -Leitura de coordenadas estilo A5, C10…
 -Tratamento de:
@@ -99,6 +99,7 @@ make clean
 - Denise Hollanda  
 - João Victor Astle  
 - Maria Luiza Melo  
+
 
 
 
