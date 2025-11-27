@@ -228,54 +228,68 @@ void game_turno(Partida *p) {
 
     int linha = 0, coluna = 0;
 
-    printf("\n--- Turno de %s ---\n", atual->apelido);
+    io_limpar_tela();  
+
+    printf("\n=== Turno de %s ===\n\n", atual->apelido);
     io_imprimir_duplo(atual);
 
-    printf("\nDigite a coordenada do tiro:\n");
+    printf("\n");
+    
     io_ler_coordenada(&linha, &coluna, atual->tabuleiro_navios.colunas);
+
+    char colChar     = 'A' + coluna;
+    int  linhaHumana = linha + 1;
 
     ResultadoTiro r = game_tentar_tiro(atual, oponente, linha, coluna);
 
-    switch (r) {
+    printf("\n>>> %s atirou em %c%d: ", atual->apelido, colChar, linhaHumana);
 
+    switch (r) {
         case TIRO_INVALIDO:
-            printf("Tiro inválido!\n");
+            printf("tiro inválido.\n");
             break;
 
         case TIRO_REPETIDO:
-            printf("Você já atirou aí! Perdeu a vez.\n");
+            printf("posição já foi alvo antes! Perdeu a vez.\n");
             break;
 
         case TIRO_AGUA:
-            printf("Água!\n");
+            printf("foi na água.\n");
             break;
 
         case TIRO_ACERTO:
-            printf("Acertou!\n");
+            printf("acertou um navio!\n");
             break;
 
         case TIRO_AFUNDOU: {
             int restantes = frota_navios_restantes(&oponente->frota);
 
             if (ultimo_navio_afundado[0] != '\0') {
-                printf("Você afundou o navio %s!\n", ultimo_navio_afundado);
+                printf("afundou o navio %s!\n", ultimo_navio_afundado);
             } else {
-                printf("Você afundou um navio inimigo!\n");
+                printf("afundou um navio inimigo!\n");
             }
 
             if (restantes > 0) {
-                printf("Ainda restam %d navios inimigos.\n", restantes);
+                printf(">>> Ainda restam %d navios inimigos.\n", restantes);
             } else {
-                printf("Você destruiu toda a frota inimiga!\n");
+                printf(">>> Você destruiu toda a frota inimiga!\n");
             }
 
             break;
         }
+
+        default:
+            printf("resultado inesperado.\n");
+            break;
     }
+
+    printf("\nPressione ENTER para passar o turno para %s...\n", oponente->apelido);
+    limparBuffer();   
+    getchar();        
 
     partida_trocar_turno(p);
 }
-
 
 void game_imprimir_estatisticas(Jogador *j1, Jogador *j2) {
     printf("\n===== ESTATÍSTICAS DA PARTIDA =====\n");
@@ -315,62 +329,41 @@ void game_mostrar_resultado_final(Partida *p) {
 }
 
 
-
 void game_executar_partida(Partida *p) {
+    if (!p) return;
+
     printf("\n=== INICIANDO PARTIDA ===\n");
 
     while (1) {
         game_turno(p);
 
-
         if (game_frota_destruida(&p->jogador1)) {
+            printf("\nFIM DE JOGO! %s venceu!\n", p->jogador2.apelido);
 
-            printf("\n=====================================\n");
-            printf("             FIM DE JOGO\n");
-            printf("=====================================\n");
-            printf("Vencedor: %s\n", p->jogador2.apelido);
-
-        
-            printf("\n--- Tabuleiro final de %s ---\n", p->jogador1.apelido);
-            io_imprimir_tabuleiro_completo(&p->jogador1);
-
-            printf("\n--- Tabuleiro final de %s ---\n", p->jogador2.apelido);
-            io_imprimir_tabuleiro_completo(&p->jogador2);
-
-          
-            printf("\n--- Estatísticas da partida ---\n");
+            game_mostrar_resultado_final(p);
             game_imprimir_estatisticas(&p->jogador1, &p->jogador2);
 
-            printf("=====================================\n\n");
+            printf("\nPressione ENTER para voltar ao menu...\n");
+            limparBuffer();
+            getchar();
 
             return;
         }
 
         if (game_frota_destruida(&p->jogador2)) {
+            printf("\nFIM DE JOGO! %s venceu!\n", p->jogador1.apelido);
 
-            printf("\n=====================================\n");
-            printf("             FIM DE JOGO\n");
-            printf("=====================================\n");
-            printf("Vencedor: %s\n", p->jogador1.apelido);
-
-            printf("\n--- Tabuleiro final de %s ---\n", p->jogador1.apelido);
-            io_imprimir_tabuleiro_completo(&p->jogador1);
-
-            printf("\n--- Tabuleiro final de %s ---\n", p->jogador2.apelido);
-            io_imprimir_tabuleiro_completo(&p->jogador2);
-
-            printf("\n--- Estatísticas da partida ---\n");
+            game_mostrar_resultado_final(p);
             game_imprimir_estatisticas(&p->jogador1, &p->jogador2);
 
-            printf("=====================================\n\n");
+            printf("\nPressione ENTER para voltar ao menu...\n");
+            limparBuffer();
+            getchar();
 
             return;
         }
     }
 }
-
-
-
 
 void game_configuracoes(void) {
     int op;
