@@ -21,7 +21,7 @@ Desenvolver uma implementação sólida, modular e didática do jogo Batalha Nav
 - Garantir alocação e liberação seguras de memória.  
 
 ---
-## Como Rodar o Projeto
+## Como Rodar o Projeto (Mac)
 
 ### **1. Clonar o repositório**
 
@@ -48,6 +48,46 @@ make
 make clean
 ```
 
+---
+
+## Como Rodar o Projeto (Windows)
+
+### **1. Clonar o repositório**
+
+Abra o terminal e execute:
+
+```bash
+git clone https://github.com/malupmelo/Jogo-Batalha-Naval.git
+cd Jogo-Batalha-Naval/src
+```
+### **2. Compilar o projeto**
+
+```bash
+gcc main.c game.c board.c fleet.c io.c config.c rnd.c -o battleship.exe
+```
+
+### **3. Executar o projeto**
+#### **(CMD)** 
+```bash
+battleship.exe
+```
+#### **(PowerShell)**
+
+```bash
+.\battleship.exe
+
+```
+
+### **4. Limpar arquivos compilados**
+#### **(CMD)** 
+
+```bash
+del battleship.exe
+```
+#### **(PowerShell)**
+```bash
+Remove-Item battleship.exe
+```
 ---
 
 ### Funcionalidades Implementadas
@@ -99,6 +139,7 @@ make clean
 - Denise Hollanda  
 - João Victor Astle  
 - Maria Luiza Melo  
+
 
 
 
