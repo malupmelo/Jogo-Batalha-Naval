@@ -21,52 +21,51 @@ Desenvolver uma implementação sólida, modular e didática do jogo Batalha Nav
 - Garantir alocação e liberação seguras de memória.  
 
 ---
-## Como Rodar o Projeto (Mac)
+## Como Rodar o Projeto
 
-### **1. Clonar o repositório**
+### **MACOS/Linux**
+
+#### **1. Clonar o repositório**
 
 ```bash
 git clone (https://github.com/malupmelo/Jogo-Batalha-Naval.git)
 cd Jogo-Batalha-Naval
 ```
 
-### **2. Compilar o projeto**
+#### **2. Compilar o projeto**
 
 ```bash
 make
 ```
 
-### **3. Executar o projeto**
+#### **3. Executar o projeto**
 
 ```bash
 ./battleship
 ```
 
-### **4. Limpar arquivos compilados**
+#### **4. Limpar arquivos compilados**
 
 ```bash
 make clean
 ```
 
----
+### **Windows**
 
-## Como Rodar o Projeto (Windows)
-
-### **1. Clonar o repositório**
-
-Abra o terminal e execute:
+#### **1. Clonar o repositório**
 
 ```bash
 git clone https://github.com/malupmelo/Jogo-Batalha-Naval.git
 cd Jogo-Batalha-Naval/src
 ```
-### **2. Compilar o projeto**
+#### **2. Compilar o projeto**
 
 ```bash
 gcc main.c game.c board.c fleet.c io.c config.c rnd.c -o battleship.exe
 ```
 
-### **3. Executar o projeto**
+#### **3. Executar o projeto**
+
 #### **(CMD)** 
 ```bash
 battleship.exe
@@ -78,13 +77,13 @@ battleship.exe
 
 ```
 
-### **4. Limpar arquivos compilados**
-#### **(CMD)** 
+#### **4. Limpar arquivos compilados**
+##### **(CMD)** 
 
 ```bash
 del battleship.exe
 ```
-#### **(PowerShell)**
+##### **(PowerShell)**
 ```bash
 Remove-Item battleship.exe
 ```
