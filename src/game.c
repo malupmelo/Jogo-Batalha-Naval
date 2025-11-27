@@ -385,15 +385,15 @@ void game_configuracoes(void) {
         }
         else if (op == 3) {
             int novo_tam;
-            printf("Novo tamanho do tabuleiro (7 a 12): ");
+            printf("Novo tamanho do tabuleiro (6 a 26): ");
             while (1) {
                 if (scanf("%d", &novo_tam) != 1) {
                     limparBuffer();
-                    printf("Valor inválido! Digite um número entre 7 e 12: ");
+                    printf("Valor inválido! Digite um número entre 6 e 26: ");
                     continue;
                 }
-                if (novo_tam < 7 || novo_tam > 12) {
-                    printf("Valor inválido! Digite um número entre 7 e 12: ");
+                if (novo_tam < 6 || novo_tam > 26) {
+                    printf("Valor inválido! Digite um número entre 6 e 26: ");
                     continue;
                 }
                 break;
