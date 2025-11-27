@@ -53,6 +53,7 @@ void game_posicionar_navio_manual(Jogador *j, Navio *n);
 void game_posicionar_frota_manual(Jogador *j);
 
 void game_imprimir_estatisticas(Jogador *j1, Jogador *j2);
+void game_mostrar_resultado_final(Partida *p);
 
 
 

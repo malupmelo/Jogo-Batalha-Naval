@@ -294,6 +294,17 @@ void game_imprimir_estatisticas(Jogador *j1, Jogador *j2) {
     printf("===================================\n");
 }
 
+void game_mostrar_resultado_final(Partida *p) {
+    printf("\n=== ESTADO FINAL DOS TABULEIROS ===\n");
+
+    printf("\n--- Jogador: %s ---\n", p->jogador1.apelido);
+    io_imprimir_duplo(&p->jogador1);
+
+    printf("\n--- Jogador: %s ---\n", p->jogador2.apelido);
+    io_imprimir_duplo(&p->jogador2);
+}
+
+
 
 void game_executar_partida(Partida *p) {
     printf("\n=== INICIANDO PARTIDA ===\n");
@@ -303,17 +314,25 @@ void game_executar_partida(Partida *p) {
 
         if (game_frota_destruida(&p->jogador1)) {
             printf("\nFIM DE JOGO! %s venceu!\n", p->jogador2.apelido);
+
+            game_mostrar_resultado_final(p);
             game_imprimir_estatisticas(&p->jogador1, &p->jogador2);
+
             return;
         }
 
         if (game_frota_destruida(&p->jogador2)) {
             printf("\nFIM DE JOGO! %s venceu!\n", p->jogador1.apelido);
+
+            game_mostrar_resultado_final(p);
             game_imprimir_estatisticas(&p->jogador1, &p->jogador2);
+
             return;
         }
     }
 }
+
+
 
 
 void game_configuracoes(void) {
