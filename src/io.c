@@ -303,3 +303,44 @@ void io_imprimir_duplo(const Jogador *j) {
     }
 }
 
+void io_imprimir_tabuleiro_completo(const Jogador *j) {
+    const Tabuleiro *nav = &j->tabuleiro_navios;
+    const Tabuleiro *tiros = &j->mapa_tiros;
+
+    int linhas = nav->linhas;
+    int colunas = nav->colunas;
+
+    printf("\n=== TABULEIRO COMPLETO DE %s ===\n", j->apelido);
+    printf("Legenda: # navio | X acerto | . erro | ~ água\n\n");
+
+    printf("    ");
+    for (int c = 0; c < colunas; c++)
+        printf(" %c ", 'A' + c);
+    printf("\n");
+
+    for (int r = 0; r < linhas; r++) {
+        printf("%2d  ", r + 1);
+
+        for (int c = 0; c < colunas; c++) {
+            int i = tabuleiro_indice(nav, r, c);
+            int j2 = tabuleiro_indice(tiros, r, c);
+
+            char simbolo;
+
+            if (tiros->celulas[j2].estado == CELULA_ACERTO)
+                simbolo = 'X';
+            else if (tiros->celulas[j2].estado == CELULA_ERRO)
+                simbolo = '.';
+            else if (nav->celulas[i].estado == CELULA_NAVIO)
+                simbolo = '#';
+            else
+                simbolo = '~';
+
+            printf(" %c ", simbolo);
+        }
+
+        printf("\n");
+    }
+}
+
+

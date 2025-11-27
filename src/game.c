@@ -312,20 +312,47 @@ void game_executar_partida(Partida *p) {
     while (1) {
         game_turno(p);
 
-        if (game_frota_destruida(&p->jogador1)) {
-            printf("\nFIM DE JOGO! %s venceu!\n", p->jogador2.apelido);
 
-            game_mostrar_resultado_final(p);
+        if (game_frota_destruida(&p->jogador1)) {
+
+            printf("\n=====================================\n");
+            printf("             FIM DE JOGO\n");
+            printf("=====================================\n");
+            printf("Vencedor: %s\n", p->jogador2.apelido);
+
+        
+            printf("\n--- Tabuleiro final de %s ---\n", p->jogador1.apelido);
+            io_imprimir_tabuleiro_completo(&p->jogador1);
+
+            printf("\n--- Tabuleiro final de %s ---\n", p->jogador2.apelido);
+            io_imprimir_tabuleiro_completo(&p->jogador2);
+
+          
+            printf("\n--- Estatísticas da partida ---\n");
             game_imprimir_estatisticas(&p->jogador1, &p->jogador2);
+
+            printf("=====================================\n\n");
 
             return;
         }
 
         if (game_frota_destruida(&p->jogador2)) {
-            printf("\nFIM DE JOGO! %s venceu!\n", p->jogador1.apelido);
 
-            game_mostrar_resultado_final(p);
+            printf("\n=====================================\n");
+            printf("             FIM DE JOGO\n");
+            printf("=====================================\n");
+            printf("Vencedor: %s\n", p->jogador1.apelido);
+
+            printf("\n--- Tabuleiro final de %s ---\n", p->jogador1.apelido);
+            io_imprimir_tabuleiro_completo(&p->jogador1);
+
+            printf("\n--- Tabuleiro final de %s ---\n", p->jogador2.apelido);
+            io_imprimir_tabuleiro_completo(&p->jogador2);
+
+            printf("\n--- Estatísticas da partida ---\n");
             game_imprimir_estatisticas(&p->jogador1, &p->jogador2);
+
+            printf("=====================================\n\n");
 
             return;
         }

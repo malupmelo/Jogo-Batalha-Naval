@@ -30,3 +30,5 @@ Orientacao io_ler_orientacao(void);
 
 
 void io_limpar_tela(void);
+void io_imprimir_tabuleiro_completo(const Jogador *j);
+
