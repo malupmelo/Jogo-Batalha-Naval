@@ -66,11 +66,11 @@ gcc main.c game.c board.c fleet.c io.c config.c rnd.c -o battleship.exe
 
 #### **3. Executar o projeto**
 
-#### **(CMD)** 
+##### **(CMD)** 
 ```bash
 battleship.exe
 ```
-#### **(PowerShell)**
+##### **(PowerShell)**
 
 ```bash
 .\battleship.exe
