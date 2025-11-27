@@ -1,9 +1,9 @@
 #pragma once
-
-#include <stdbool.h>
-#include "game.h"
 #include <stdio.h>
-
+#include <stdbool.h>
+#include "board.h"   
+#include "fleet.h"
+#include "game.h"    
 
 void limparBuffer(void);
 void lerString(char *str, int tamanho);
@@ -19,6 +19,7 @@ int io_menu_principal(void);
 
 bool io_ler_coordenada(int *linha, int *coluna, int limite);
 
-int io_menu_configuracoes(void);
+void io_imprimir_duplo(const Jogador *j);
 
-Orientacao io_ler_orientacao(void);
+void io_imprimir_duplo(const Jogador *j);
+

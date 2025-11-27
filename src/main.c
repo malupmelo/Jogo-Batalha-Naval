@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include "game.h"
 #include "rnd.h"
-#include "game.h"
-#include "io.h"
+#include "config.h"
 
-int main(void) {
-    aleatorio_inicializar();
+int main() {
+    aleatorio_inicializar();   
+    config_inicializar();      
 
-    game_menu();
+    game_menu();               
 
     return 0;
 }

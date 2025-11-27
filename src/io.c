@@ -1,4 +1,3 @@
-#include <stdlib.h>  
 #include "io.h"
 #include <stdio.h>
 #include <ctype.h>
@@ -6,6 +5,7 @@
 #include "board.h"
 #include "fleet.h"
 #include <stdbool.h>
+#include "game.h"
 
 void limparBuffer(void) {
     int c;
@@ -101,7 +101,7 @@ void imprimir_tabuleiro_navios(const Tabuleiro *t) {
                 case CELULA_AGUA:   simbolo = '~'; break;
                 case CELULA_NAVIO:  simbolo = '#'; break;
                 case CELULA_ACERTO: simbolo = 'X'; break;
-                case CELULA_ERRO:   simbolo = '.'; break;
+                case CELULA_ERRO:   simbolo = '·'; break;
                 default: simbolo = '?';
             }
 
@@ -132,7 +132,7 @@ void imprimir_mapa_tiros(const Tabuleiro *t) {
             if (t->celulas[i].estado == CELULA_ACERTO)
                 simbolo = 'X';
             else if (t->celulas[i].estado == CELULA_ERRO)
-                simbolo = '.';
+                simbolo = '·';
             else
                 simbolo = '~';
 
@@ -190,37 +190,36 @@ bool io_ler_coordenada(int *linha, int *coluna, int limite) {
                'A' + limite - 1, limite);
     }
 }
-int io_menu_configuracoes(void) {
-    int opcao = -1;
+
+int io_menu_configuracoes() {
+    int op;
 
     printf("\n=== CONFIGURAÇÕES ===\n");
     printf("1) Alterar apelido do Jogador 1\n");
     printf("2) Alterar apelido do Jogador 2\n");
-    printf("3) Alterar tamanho do tabuleiro (6 a 26)\n");
-    printf("4) Voltar\n");
+    printf("3) Alterar tamanho do tabuleiro\n");
+    printf("4) Voltar ao menu principal\n");
     printf("Escolha uma opção: ");
 
     while (1) {
-        if (scanf("%d", &opcao) != 1) {
+        if (scanf("%d", &op) != 1) {
             limparBuffer();
-            printf("Entrada inválida. Digite 1, 2, 3 ou 4: ");
+            printf("Entrada inválida. Tente novamente: ");
             continue;
         }
 
-        if (opcao < 1 || opcao > 4) {
-            printf("Opção inválida. Digite 1, 2, 3 ou 4: ");
+        if (op < 1 || op > 4) {
+            printf("Opção inexistente. Escolha entre 1 e 4: ");
             continue;
         }
 
         break;
     }
 
-    limparBuffer();
-    return opcao;
+    return op;
 }
 
-
-Orientacao io_ler_orientacao(void) {
+Orientacao io_ler_orientacao() {
     char c;
 
     while (1) {
@@ -234,3 +233,70 @@ Orientacao io_ler_orientacao(void) {
         printf("Entrada inválida! Use H ou V.\n");
     }
 }
+
+void io_limpar_tela() {
+    printf("\033[2J\033[H");  
+}
+
+void io_imprimir_duplo(const Jogador *j) {
+    const Tabuleiro *tiros = &j->mapa_tiros;
+    const Tabuleiro *navios = &j->tabuleiro_navios;
+
+    int linhas = tiros->linhas;
+    int colunas = tiros->colunas;
+
+    printf("\n");
+    printf("        SEUS TIROS                      SEUS NAVIOS\n");
+    printf("    ");
+
+    for (int c = 0; c < colunas; c++)
+        printf(" %c ", 'A' + c);
+
+    printf("           ");
+
+    for (int c = 0; c < colunas; c++)
+        printf(" %c ", 'A' + c);
+
+    printf("\n");
+
+    for (int r = 0; r < linhas; r++) {
+
+        printf("%2d  ", r + 1);
+
+        for (int c = 0; c < colunas; c++) {
+            int i = tabuleiro_indice(tiros, r, c);
+
+            char simbolo;
+            if (tiros->celulas[i].estado == CELULA_ACERTO)
+                simbolo = 'X';
+            else if (tiros->celulas[i].estado == CELULA_ERRO)
+                simbolo = '·';
+            else
+                simbolo = '~';
+
+            printf(" %c ", simbolo);
+        }
+
+        printf("       ");
+
+        printf("%2d  ", r + 1);
+
+        for (int c = 0; c < colunas; c++) {
+            int i = tabuleiro_indice(navios, r, c);
+
+            char simbolo;
+            switch (navios->celulas[i].estado) {
+                case CELULA_AGUA:   simbolo = '~'; break;
+                case CELULA_NAVIO:  simbolo = '#'; break;
+                case CELULA_ACERTO: simbolo = 'X'; break;
+                case CELULA_ERRO:   simbolo = '·'; break;
+                default: simbolo = '?';
+            }
+
+            printf(" %c ", simbolo);
+        }
+
+        printf("\n");
+    }
+}
+
