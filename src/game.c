@@ -346,35 +346,68 @@ void game_configuracoes(void) {
             limparBuffer();
             lerString(current_config.nick1, sizeof(current_config.nick1));
             printf("Apelido alterado!\n");
-        } else if (op == 2) {
+        }
+        else if (op == 2) {
             printf("Novo apelido para Jogador 2: ");
             limparBuffer();
             lerString(current_config.nick2, sizeof(current_config.nick2));
             printf("Apelido alterado!\n");
-        } else if (op == 3) {
-            int novo_tam = 0;
-
+        }
+        else if (op == 3) {
+            int novo_tam;
             printf("Novo tamanho do tabuleiro (7 a 12): ");
             while (1) {
                 if (scanf("%d", &novo_tam) != 1) {
                     limparBuffer();
-                    printf("Entrada inválida. Digite um número: ");
+                    printf("Valor inválido! Digite um número entre 7 e 12: ");
                     continue;
                 }
-
                 if (novo_tam < 7 || novo_tam > 12) {
-                    printf("Tamanho fora do intervalo. Escolha entre 7 e 12: ");
+                    printf("Valor inválido! Digite um número entre 7 e 12: ");
                     continue;
                 }
-
                 break;
             }
-
             current_config.tamanho_tabuleiro = novo_tam;
             printf("Tamanho do tabuleiro alterado para %d!\n", novo_tam);
         }
+        else if (op == 4) {
+            int escolha;
 
-    } while (op != 4);
+            printf("\n=== MODO DE POSICIONAMENTO ===\n");
+            printf("1) Jogador 1 manual / Jogador 2 automático\n");
+            printf("2) Jogador 1 automático / Jogador 2 automático\n");
+            printf("3) Jogador 1 manual / Jogador 2 manual\n");
+            printf("Escolha uma opção: ");
+
+            while (1) {
+                if (scanf("%d", &escolha) != 1) {
+                    limparBuffer();
+                    printf("Entrada inválida. Digite 1, 2 ou 3: ");
+                    continue;
+                }
+                if (escolha < 1 || escolha > 3) {
+                    printf("Opção inválida. Digite 1, 2 ou 3: ");
+                    continue;
+                }
+                break;
+            }
+
+            if (escolha == 1) {
+                current_config.posicao_manual_j1 = true;
+                current_config.posicao_manual_j2 = false;
+            } else if (escolha == 2) {
+                current_config.posicao_manual_j1 = false;
+                current_config.posicao_manual_j2 = false;
+            } else { 
+                current_config.posicao_manual_j1 = true;
+                current_config.posicao_manual_j2 = true;
+            }
+
+            printf("Modo de posicionamento atualizado!\n");
+        }
+
+    } while (op != 5); 
 }
 
 void game_menu(void) {
@@ -385,7 +418,7 @@ void game_menu(void) {
 
         switch (opcao) {
 
-        case 1: {
+        case 1: { 
             int tamanho = current_config.tamanho_tabuleiro;
 
             Partida p;
@@ -397,12 +430,31 @@ void game_menu(void) {
                 break;
             }
 
-            printf("\nPosicionando frotas automaticamente...\n");
-            game_posicionar_frota_automatica(&p.jogador1);
-            game_posicionar_frota_automatica(&p.jogador2);
+            printf("\n=== Posicionamento das Frotas ===\n");
+
+        
+            if (current_config.posicao_manual_j1) {
+                printf("\n--- Jogador 1 (%s) posicionando manualmente ---\n",
+                       p.jogador1.apelido);
+                game_posicionar_frota_manual(&p.jogador1);
+            } else {
+                printf("\n--- Jogador 1 (%s) posicionamento automático ---\n",
+                       p.jogador1.apelido);
+                game_posicionar_frota_automatica(&p.jogador1);
+            }
+
+        
+            if (current_config.posicao_manual_j2) {
+                printf("\n--- Jogador 2 (%s) posicionando manualmente ---\n",
+                       p.jogador2.apelido);
+                game_posicionar_frota_manual(&p.jogador2);
+            } else {
+                printf("\n--- Jogador 2 (%s) posicionamento automático ---\n",
+                       p.jogador2.apelido);
+                game_posicionar_frota_automatica(&p.jogador2);
+            }
 
             game_executar_partida(&p);
-
             partida_destruir(&p);
 
             break;
@@ -418,3 +470,4 @@ void game_menu(void) {
         }
     }
 }
+

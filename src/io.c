@@ -199,7 +199,8 @@ int io_menu_configuracoes(void) {
     printf("1) Alterar apelido do Jogador 1\n");
     printf("2) Alterar apelido do Jogador 2\n");
     printf("3) Alterar tamanho do tabuleiro\n");
-    printf("4) Voltar ao menu principal\n");
+    printf("4) Modo de posicionamento da frota\n");
+    printf("5) Voltar ao menu principal\n");
     printf("Escolha uma opção: ");
 
     while (1) {
@@ -209,8 +210,8 @@ int io_menu_configuracoes(void) {
             continue;
         }
 
-        if (op < 1 || op > 4) {
-            printf("Opção inexistente. Escolha entre 1 e 4: ");
+        if (op < 1 || op > 5) {
+            printf("Opção inexistente. Escolha entre 1 e 5: ");
             continue;
         }
 
@@ -219,6 +220,7 @@ int io_menu_configuracoes(void) {
 
     return op;
 }
+
 
 Orientacao io_ler_orientacao(void) {
     char c;
