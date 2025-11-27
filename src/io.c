@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>   
+#include <stdbool.h>
 #include "board.h"
 #include "fleet.h"
-#include <stdbool.h>
 #include "game.h"
 
 void limparBuffer(void) {
@@ -101,7 +102,7 @@ void imprimir_tabuleiro_navios(const Tabuleiro *t) {
                 case CELULA_AGUA:   simbolo = '~'; break;
                 case CELULA_NAVIO:  simbolo = '#'; break;
                 case CELULA_ACERTO: simbolo = 'X'; break;
-                case CELULA_ERRO:   simbolo = '·'; break;
+                case CELULA_ERRO:   simbolo = '.'; break;
                 default: simbolo = '?';
             }
 
@@ -132,7 +133,7 @@ void imprimir_mapa_tiros(const Tabuleiro *t) {
             if (t->celulas[i].estado == CELULA_ACERTO)
                 simbolo = 'X';
             else if (t->celulas[i].estado == CELULA_ERRO)
-                simbolo = '·';
+                simbolo = '.';
             else
                 simbolo = '~';
 
@@ -191,7 +192,7 @@ bool io_ler_coordenada(int *linha, int *coluna, int limite) {
     }
 }
 
-int io_menu_configuracoes() {
+int io_menu_configuracoes(void) {
     int op;
 
     printf("\n=== CONFIGURAÇÕES ===\n");
@@ -219,7 +220,7 @@ int io_menu_configuracoes() {
     return op;
 }
 
-Orientacao io_ler_orientacao() {
+Orientacao io_ler_orientacao(void) {
     char c;
 
     while (1) {
@@ -234,7 +235,7 @@ Orientacao io_ler_orientacao() {
     }
 }
 
-void io_limpar_tela() {
+void io_limpar_tela(void) {
     printf("\033[2J\033[H");  
 }
 
@@ -270,7 +271,7 @@ void io_imprimir_duplo(const Jogador *j) {
             if (tiros->celulas[i].estado == CELULA_ACERTO)
                 simbolo = 'X';
             else if (tiros->celulas[i].estado == CELULA_ERRO)
-                simbolo = '·';
+                simbolo = '.';
             else
                 simbolo = '~';
 
@@ -289,7 +290,7 @@ void io_imprimir_duplo(const Jogador *j) {
                 case CELULA_AGUA:   simbolo = '~'; break;
                 case CELULA_NAVIO:  simbolo = '#'; break;
                 case CELULA_ACERTO: simbolo = 'X'; break;
-                case CELULA_ERRO:   simbolo = '·'; break;
+                case CELULA_ERRO:   simbolo = '.'; break;
                 default: simbolo = '?';
             }
 

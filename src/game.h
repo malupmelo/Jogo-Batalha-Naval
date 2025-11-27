@@ -15,7 +15,10 @@ typedef struct {
     Tabuleiro tabuleiro_navios; 
     Tabuleiro mapa_tiros;       
     Frota frota;                
-    char apelido[32];           
+    char apelido[32];  
+    
+    int tiros_disparados;   
+    int tiros_acertados;  
 } Jogador;
 
 typedef struct {
@@ -48,6 +51,9 @@ void game_configuracoes(void);
 
 void game_posicionar_navio_manual(Jogador *j, Navio *n);
 void game_posicionar_frota_manual(Jogador *j);
+
+void game_imprimir_estatisticas(Jogador *j1, Jogador *j2);
+
 
 
 

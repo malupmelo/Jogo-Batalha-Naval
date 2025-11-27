@@ -3,7 +3,7 @@
 #include "rnd.h"
 #include "config.h"
 
-int main() {
+int main(void) {
     aleatorio_inicializar();   
     config_inicializar();      
 

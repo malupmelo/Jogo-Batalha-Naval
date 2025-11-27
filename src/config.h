@@ -4,11 +4,10 @@
 typedef struct {
     char nick1[32];
     char nick2[32];
-    int tamanho;    
+    int tamanho_tabuleiro;    
 } Configuracoes;
 
 extern Configuracoes current_config;
 
-void config_inicializar();
+void config_inicializar(void);
 
-void game_configuracoes();

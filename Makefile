@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -Werror -O2
 INCLUDE = -Isrc
 
-SRC = src/main.c src/board.c src/fleet.c src/game.c src/io.c src/rnd.c
+SRC = src/main.c src/board.c src/fleet.c src/game.c src/io.c src/rnd.c src/config.c
 OBJ = $(SRC:.c=.o)
 
 battleship: $(OBJ)

@@ -28,6 +28,11 @@ bool jogador_inicializar(Jogador *j, const char *apelido, int linhas, int coluna
         return false;
     }
 
+    j->tiros_disparados = 0;
+    j->tiros_acertados  = 0;
+
+    
+
     return true;
 }
 
@@ -127,13 +132,8 @@ bool game_posicionar_frota_automatica(Jogador *j) {
 
 
 ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int coluna) {
-    if (!atirador || !alvo) return TIRO_INVALIDO;
-
     Tabuleiro *navios = &alvo->tabuleiro_navios;
     Tabuleiro *tiros  = &atirador->mapa_tiros;
-
-    if (!tabuleiro_dentro_limites(navios, linha, coluna))
-        return TIRO_INVALIDO;
 
     int idx = tabuleiro_indice(navios, linha, coluna);
 
@@ -142,6 +142,9 @@ ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int 
     {
         return TIRO_REPETIDO;
     }
+
+
+    atirador->tiros_disparados++;
 
     if (navios->celulas[idx].estado == CELULA_AGUA) {
         navios->celulas[idx].estado = CELULA_ERRO;
@@ -156,6 +159,9 @@ ResultadoTiro game_tentar_tiro(Jogador *atirador, Jogador *alvo, int linha, int 
 
         int id = navios->celulas[idx].id_navio;
         frota_registrar_acerto(&alvo->frota, id);
+
+    
+        atirador->tiros_acertados++;
 
         if (frota_navio_afundou(&alvo->frota, id)) {
             return TIRO_AFUNDOU;
@@ -261,24 +267,56 @@ void game_turno(Partida *p) {
     partida_trocar_turno(p);
 }
 
-void game_executar_partida(Partida *p) {
-    if (!p) return;
+void game_imprimir_estatisticas(Jogador *j1, Jogador *j2) {
+    printf("\n===== ESTATÍSTICAS DA PARTIDA =====\n");
 
-    p->partida_encerrada = false;
+    double precisao1 = 0.0;
+    double precisao2 = 0.0;
 
-    printf("\nIniciando partida...\n");
-    printf("Jogador 1: %s\n", p->jogador1.apelido);
-    printf("Jogador 2: %s\n\n", p->jogador2.apelido);
-
-    while (!p->partida_encerrada) {
-        game_turno(p);
+    if (j1->tiros_disparados > 0) {
+        precisao1 = (100.0 * j1->tiros_acertados) / j1->tiros_disparados;
     }
 
-    printf("\nPartida encerrada!\n");
+    if (j2->tiros_disparados > 0) {
+        precisao2 = (100.0 * j2->tiros_acertados) / j2->tiros_disparados;
+    }
+
+    printf("\nJogador: %s\n", j1->apelido);
+    printf("  Tiros disparados: %d\n", j1->tiros_disparados);
+    printf("  Tiros acertados : %d\n", j1->tiros_acertados);
+    printf("  Precisão        : %.1f%%\n", precisao1);
+
+    printf("\nJogador: %s\n", j2->apelido);
+    printf("  Tiros disparados: %d\n", j2->tiros_disparados);
+    printf("  Tiros acertados : %d\n", j2->tiros_acertados);
+    printf("  Precisão        : %.1f%%\n", precisao2);
+
+    printf("===================================\n");
 }
 
 
-void game_configuracoes() {
+void game_executar_partida(Partida *p) {
+    printf("\n=== INICIANDO PARTIDA ===\n");
+
+    while (1) {
+        game_turno(p);
+
+        if (game_frota_destruida(&p->jogador1)) {
+            printf("\nFIM DE JOGO! %s venceu!\n", p->jogador2.apelido);
+            game_imprimir_estatisticas(&p->jogador1, &p->jogador2);
+            return;
+        }
+
+        if (game_frota_destruida(&p->jogador2)) {
+            printf("\nFIM DE JOGO! %s venceu!\n", p->jogador1.apelido);
+            game_imprimir_estatisticas(&p->jogador1, &p->jogador2);
+            return;
+        }
+    }
+}
+
+
+void game_configuracoes(void) {
     int op;
 
     do {
@@ -313,7 +351,7 @@ void game_configuracoes() {
                 break;
             }
 
-            current_config.tamanho = novo_tam;
+            current_config.tamanho_tabuleiro = novo_tam;
             printf("Tamanho do tabuleiro alterado para %d!\n", novo_tam);
         }
 
@@ -329,7 +367,7 @@ void game_menu(void) {
         switch (opcao) {
 
         case 1: {
-            int tamanho = current_config.tamanho;
+            int tamanho = current_config.tamanho_tabuleiro;
 
             Partida p;
 
