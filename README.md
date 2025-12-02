@@ -135,9 +135,9 @@ Remove-Item battleship.exe
 
 ## Nossa Equipe
 
-- Denise Hollanda  
 - João Victor Astle  
 - Maria Luiza Melo  
+
 
 
 
